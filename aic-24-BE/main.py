@@ -38,11 +38,7 @@ app.add_middleware(
 
 class CustomUnpickler(pickle.Unpickler):
     def find_class(self, module, name):
-        if name == "Plato":
-            print("Found MINH")
-            from plato import Plato
-            return Plato
-        elif name == "NitzcheCLIP":
+        if name == "NitzcheCLIP":
             print("Found Nitzche")
             from nitzche_clip import NitzcheCLIP
             return NitzcheCLIP
