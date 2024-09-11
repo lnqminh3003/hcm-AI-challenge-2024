@@ -1,0 +1,17 @@
+services:
+  # poetry-project:
+  #   container_name: aic-server
+  #   build: .
+  #   ports:
+  #     - "8000:8000"
+  sonic:
+    image: valeriansaliou/sonic:v1.2.0
+    volumes:
+      - ./sonic_conf.cfg:/etc/sonic.cfg
+    ports:
+      - "1491:1491"
+    healthcheck:
+      test: ["CMD", "sleep", "2"]
+      interval: 1s
+      timeout: 5s
+      retries: 120

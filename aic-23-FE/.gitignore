@@ -1,0 +1,64 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+.env*.local
+.env.development
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+#asr
+/public/transcript
+
+#frames
+/public/data/**/**/*
+/public/L02/**/*
+/public/L03/**/*
+/public/L04/**/*
+/public/L05/**/*
+/public/L06/**/*
+/public/L07/**/*
+/public/L08/**/*
+/public/L09/**/*
+/public/L10/**/*
+/public/L11/**/*
+/public/L12/**/*
+/public/L13/**/*
+/public/L14/**/*
+/public/L15/**/*
+/public/L16/**/*
+/public/L17/**/*
+/public/L18/**/*
+/public/L19/**/*
+/public/L20/**/*
+
+
