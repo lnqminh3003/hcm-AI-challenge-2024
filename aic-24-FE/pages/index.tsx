@@ -450,7 +450,7 @@ const Home: NextPage = () => {
             <Button
               onClick={() => {
                 window.open(
-                  `/videos/${modalItem.video}?frameId=${modalItem.frameId}`, // Catch-all slug and query param
+                  `/videos/${modalItem.video}?video=${modalItem.video}&frameId=${modalItem.frameId}`, // Catch-all slug and query param
                   "_blank"
                 );
               }}

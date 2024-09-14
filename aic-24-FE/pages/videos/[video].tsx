@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { use, useEffect, useMemo, useState } from "react";
+import { use, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { ImgType } from "..";
 import { Modal, Row, Col, Image, Button, message } from "antd";
 import { extractBatch, rmExt } from "src/functions";
@@ -13,6 +13,7 @@ const PREFIX = "/data/video_frames/";
 
 interface Props {
   images: ImgType[];
+  videoId: string;
 }
 export type VideoProp = {
   imgArr: ImgType[];
@@ -22,7 +23,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   context
 ) => {
   const { video } = context.params as { video: string };
-  console.log("MINH --- " + video);
+
   const directoryPath = path.join(
     process.cwd(),
     "public/data/video_frames",
@@ -45,13 +46,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   return {
     props: {
       images: imagePaths,
+      videoId: video,
     },
   };
 };
 
-const Video = ({ images }: Props) => {
+const Video = ({ images, videoId }: Props) => {
   const router = useRouter();
-  const { slug, frameId, video } = router.query;
+  const { frameId, video } = router.query;
   const [visible, setVisible] = useState(false);
   const [modalItem, setModalItem] = useState<ImgType>(images[0]);
   const [confirmSubmit, SetConfirmSubmit] = useState(false);
@@ -84,10 +86,10 @@ const Video = ({ images }: Props) => {
   };
 
   useEffect(() => {
-    console.log(`${PREFIX}L08_V020/${frameId}.jpg`);
+    console.log(`${PREFIX}${video}/${frameId}.jpg`);
 
     const element = document.querySelector(
-      `img[src="${PREFIX}L01_V001/${frameId}.jpg"]`
+      `img[src="${PREFIX}${video}/${frameId}.jpg"]`
     );
 
     if (element) {
@@ -96,7 +98,8 @@ const Video = ({ images }: Props) => {
         block: "center",
       });
     }
-  }, [router]);
+    console.log("minh");
+  }, [video, frameId, router]);
 
   return (
     <>
@@ -112,7 +115,7 @@ const Video = ({ images }: Props) => {
           <div
             key={index}
             style={{
-              width: `${frameId}.jpg` == image.frameId ? "400px" : "200px",
+              width: `${frameId}.jpg` == image.frameId ? "500px" : "200px",
             }}
           >
             <img
@@ -130,12 +133,10 @@ const Video = ({ images }: Props) => {
           </div>
         ))}
       </div>
-      <h1>hello</h1>
-      <h2>{slug}</h2>
       <Image
         alt=""
         style={{ width: "100%", height: "100vh" }}
-        src={`${PREFIX}${video}/${frameId}.jpg`}
+        src={`/data/video_frames/${video}/${frameId}.jpg`}
       ></Image>
       <Modal
         transitionName=""
@@ -148,7 +149,11 @@ const Video = ({ images }: Props) => {
         width="600px"
         open={visible}
       >
-        {/* <Image id={`${PREFIX}${frameId}`} src={""} alt="aic-img" /> */}
+        <Image
+          id={`${PREFIX}${modalItem.video}/${modalItem.frameId}`}
+          src={modalItem.link}
+          alt="aic-img"
+        />
         <h4>{modalItem.video + "/" + modalItem.frameId}</h4>
         {/* <Button
           onClick={() => {
