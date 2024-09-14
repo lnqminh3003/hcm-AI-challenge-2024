@@ -57,7 +57,6 @@ const SEARCH_OPTIONS = [
 ];
 
 const Home: NextPage = () => {
-  const testImage = "/data/video_frames/L01_V001/00137.jpg";
   const [form] = useForm();
   const [searchOption, setSearchOption] = useState<String>("live-search");
   const [imgSource, setImgSource] = useState<ImgType[]>([]);
@@ -230,16 +229,16 @@ const Home: NextPage = () => {
       API_SERVICES.QUERY.query(enString, limit, model).then((responseData) => {
         const newSource = responseData.data.map((value) => {
           const videoId: string =
-                extractParts(value.img_path.toString())?.videoId ?? "";
-              const frameId: string =
-                extractParts(value.img_path.toString())?.frameId ?? "";
-              return {
-                video: videoId,
-                frameId: frameId,
-                link: value.img_path.toString(),
-                mappedFrameId: "",
-                youtubeUrl: value.youtube_link.toString(),
-              };
+            extractParts(value.img_path.toString())?.videoId ?? "";
+          const frameId: string =
+            extractParts(value.img_path.toString())?.frameId ?? "";
+          return {
+            video: videoId,
+            frameId: frameId,
+            link: value.img_path.toString(),
+            mappedFrameId: "",
+            youtubeUrl: value.youtube_link.toString(),
+          };
         });
 
         setImgSource(newSource);
@@ -307,7 +306,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>AIC 2023</title>
+        <title>AIC 2024</title>
       </Head>
       <Form form={form} style={{ padding: 16 }}>
         <Row gutter={[12, 0]}>
@@ -451,7 +450,7 @@ const Home: NextPage = () => {
             <Button
               onClick={() => {
                 window.open(
-                  `/video/${modalItem.video}?frame=${modalItem.frameId}`,
+                  `/videos/${modalItem.video}?frameId=${modalItem.frameId}`, // Catch-all slug and query param
                   "_blank"
                 );
               }}
