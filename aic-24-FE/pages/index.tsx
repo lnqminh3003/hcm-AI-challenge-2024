@@ -26,6 +26,12 @@ import { NEXT_API_CREDENTIAL, NEXT_API_SESSION } from "@constants";
 import * as Translate from "@google-cloud/translate";
 import AsrItem from "ui/asr-item";
 
+function extractVideoYoutubeId(url: string) {
+  const urlObj = new URL(url);
+
+  return urlObj.searchParams.get("v");
+}
+
 export type ImgType = {
   link?: string;
   video: string;
@@ -450,7 +456,11 @@ const Home: NextPage = () => {
             <Button
               onClick={() => {
                 window.open(
-                  `/videos/${modalItem.video}?video=${modalItem.video}&frameId=${modalItem.frameId}`, // Catch-all slug and query param
+                  `/videos/${modalItem.video}?video=${
+                    modalItem.video
+                  }&frameId=${modalItem.frameId}&prefix=${extractVideoYoutubeId(
+                    modalItem.youtubeUrl?.toString() || ""
+                  )}`, // Catch-all slug and query param
                   "_blank"
                 );
               }}

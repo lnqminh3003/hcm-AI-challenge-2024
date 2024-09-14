@@ -41,6 +41,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       link: `/data/video_frames/${video}/${file}`,
       video: video,
       frameId: file,
+      youtubeUrl: "https://www.youtube.com/watch?v=5KiMl_1m5ck&t=786s",
     }));
 
   return {
@@ -53,7 +54,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
 const Video = ({ images, videoId }: Props) => {
   const router = useRouter();
-  const { frameId, video } = router.query;
+  const { frameId, video, prefix } = router.query;
   const [visible, setVisible] = useState(false);
   const [modalItem, setModalItem] = useState<ImgType>(images[0]);
   const [confirmSubmit, SetConfirmSubmit] = useState(false);
@@ -155,13 +156,17 @@ const Video = ({ images, videoId }: Props) => {
           alt="aic-img"
         />
         <h4>{modalItem.video + "/" + modalItem.frameId}</h4>
-        {/* <Button
+        <Button
           onClick={() => {
-            window.open(modalItem.youtubeUrl);
+            window.open(
+              `https://www.youtube.com/watch?v=${prefix}k&t=${(
+                parseInt(modalItem.frameId) / 25
+              ).toString()}s`
+            );
           }}
         >
           View Youtube Link
-        </Button> */}
+        </Button>
       </Modal>
       <Modal
         centered
