@@ -29,8 +29,8 @@
     "@types/lodash": "^4.14.199",
     "@types/styled-components": "^5.1.27",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.45",
-    "tailwindcss": "^3.4.10"
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.11"
   },
   "browser": {
     "tls": false,
