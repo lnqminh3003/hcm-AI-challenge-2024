@@ -73,7 +73,7 @@ async def preload_model():
     )
     await c.channel(Channel.SEARCH)
     app.client = c
-
+    print("Connected to Sonic")
     files = []
     asr_folder = "./data_processing/raw/transcript/"
     app.text_data = {}
@@ -95,6 +95,8 @@ async def preload_model():
                     app.text_data[vid_id][start] = segment[
                         "text"
                     ]
+                        
+    print(app.text_data) 
 
 
 class Query(BaseModel):
@@ -159,6 +161,7 @@ class ASRQuery(BaseModel):
     top: int = 40
 
 
+
 @app.post("/asr")
 async def asrquery(asrquery: ASRQuery):
     results = await app.client.query(
@@ -169,7 +172,7 @@ async def asrquery(asrquery: ASRQuery):
     )
 
     res = []
-    # print(results)
+    print(results)
     for r in results:
         vid_id, frame_start, frame_end = r.decode("utf-8").split(
             "-"

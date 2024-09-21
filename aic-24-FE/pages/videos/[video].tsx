@@ -87,10 +87,10 @@ const Video = ({ images, videoId }: Props) => {
   };
 
   useEffect(() => {
-    console.log(`${PREFIX}${video}/${frameId}.jpg`);
+    console.log(`${PREFIX}${video}/${frameId}`);
 
     const element = document.querySelector(
-      `img[src="${PREFIX}${video}/${frameId}.jpg"]`
+      `img[src="${PREFIX}${video}/${frameId}"]`
     );
 
     if (element) {

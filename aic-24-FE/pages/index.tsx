@@ -40,8 +40,6 @@ export type ImgType = {
   text?: string;
 };
 
-// import testImage  from "../data/video_frames/L01_V001/00137.jpg"
-
 const { TextArea } = Input;
 
 const mock_item = {
@@ -221,10 +219,11 @@ const Home: NextPage = () => {
     if (searchOption === "asr") {
       API_SERVICES.ASR.asr(asrText, limit).then((responseData) => {
         const newSource = responseData.map((value) => {
+          console.log(value);
           return {
             video: value.video_id,
             frameId: value.frame_id.toString(),
-            link: `${extractBatch(value.video_id)}/${value.video_id}/${
+            link: `/data/video_frames/${value.video_id}/${
               value.frame_id
             }.jpg`,
             text: value.text,
