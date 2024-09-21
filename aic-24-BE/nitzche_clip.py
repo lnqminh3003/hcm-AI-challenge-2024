@@ -5,11 +5,12 @@ import pickle
 import torch.nn.functional as F
 from open_clip import create_model_from_pretrained, get_tokenizer 
 from tqdm import tqdm
+from collections import defaultdict
 
 
 class NitzcheCLIP:
     def __init__(self, feature_path):
-        self.file_path_list, self.image_feature, self.youtube_link = [], [], {}
+        self.file_path_list, self.image_feature, self.youtube_link, self.fps = [], [], {}, {}
         for filename in tqdm(sorted(os.listdir(feature_path))):
             filepath = os.path.join(feature_path, filename)
             with open(filepath, "rb") as fp:
@@ -25,6 +26,7 @@ class NitzcheCLIP:
             with open(filepath, 'r') as file:
                 data = json.load(file)
             self.youtube_link[video_id] = data['watch_url']
+            self.fps[video_id] = data['fps']
                 
         self.image_feature = np.concatenate(self.image_feature, axis=0)
         self.model, self.processor = self._load_model()
@@ -63,10 +65,49 @@ class NitzcheCLIP:
         return [
             {
                 'img_path': os.path.join('/data/video_frames', vid, timeframe),
-                'youtube_link': f"{self.youtube_link[vid]}&t={int(int(timeframe.split('.')[0])/25)}s"
+                'youtube_link': f"{self.youtube_link[vid]}&t={int(int(timeframe.split('.')[0])/self.fps[vid])}s"
             } 
             for vid, timeframe_list in results_dict.items() for timeframe in timeframe_list
         ]
+        
+    # def predict(self, text_query, top=500):
+    #     single_query = text_query.split('.')
+    #     results = [self.soft_predict(query, top) for query in single_query]
+        
+    #     final_results = defaultdict(list)
+    #     vid_score = defaultdict(int)    
+    #     vid_order = []                     # To maintain the original insertion order of vids
+   
+    #     for sublist in results:
+    #         seen_vids_in_sublist = set()  
+    #         for item in sublist:
+    #             vid, timeframe = item['img_path'].split('/')[-2:]
+                
+    #             if vid not in seen_vids_in_sublist:
+    #                 vid_score[vid] += 1
+    #                 seen_vids_in_sublist.add(vid)
+                    
+    #             # Record the vid's first appearance in original order
+    #             if vid not in vid_order:
+    #                 vid_order.append(vid)
+                    
+    #             final_results[vid].append(timeframe)
+    #             final_results[vid] = sorted(final_results[vid], key=lambda x: int(x[:-4]))        
+                
+    #     # Sort by vid_score first (descending), then by original vid_order if the scores are the same
+    #     sorted_final_results = sorted(
+    #         final_results.items(),
+    #         key=lambda x: (-vid_score[x[0]], vid_order.index(x[0]))
+    #     )
+
+    #     # Convert to the desired output format (list of dictionaries)
+    #     return [
+    #         {
+    #             'img_path': os.path.join('./data/video_frames', vid, timeframe),
+    #             'youtube_link': f"{self.youtube_link[vid]}&t={int(int(timeframe.split('.')[0])/self.fps[vid])}s"
+    #         }
+    #         for vid, timeframe_list in sorted_final_results for timeframe in timeframe_list
+    #     ] 
         
     def save(self, path):
         pickle.dump(self, open(path, "wb"))
