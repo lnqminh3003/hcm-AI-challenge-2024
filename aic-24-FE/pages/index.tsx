@@ -72,9 +72,9 @@ const Home: NextPage = () => {
   const [asr, SetAsr] = useState(false);
 
   function extractParts(str: string) {
-    const regex = /\/([^\/]+)\/(\d+)\.jpg$/;
+    const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.jpg)$/;
     const match = str.match(regex);
-
+  
     if (match) {
       return {
         videoId: match[1],
@@ -84,6 +84,7 @@ const Home: NextPage = () => {
       return null;
     }
   }
+  
 
   const imgContent = useMemo(() => {
     const newImgSrc = groupByVideo(imgSource);
@@ -123,7 +124,7 @@ const Home: NextPage = () => {
                         setModalItem={setModalItem}
                       />
                     ) : (
-                      <div className="flex flex-row">
+                      <div className="">
                         <p>
                           Video ID:
                           {extractParts(img.link ? img.link : "")?.videoId}
@@ -142,7 +143,7 @@ const Home: NextPage = () => {
                           preview={false}
                         />
 
-                        <p className="text-3xl font-bold underline">
+                        <p className="">
                           Frame ID:
                           {extractParts(img.link ? img.link : "")?.frameId}
                         </p>
@@ -238,6 +239,8 @@ const Home: NextPage = () => {
             extractParts(value.img_path.toString())?.videoId ?? "";
           const frameId: string =
             extractParts(value.img_path.toString())?.frameId ?? "";
+          console.log(value.img_path);
+
           return {
             video: videoId,
             frameId: frameId,

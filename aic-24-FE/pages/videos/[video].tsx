@@ -116,7 +116,7 @@ const Video = ({ images, videoId }: Props) => {
           <div
             key={index}
             style={{
-              width: `${frameId}.jpg` == image.frameId ? "500px" : "200px",
+              width: `${frameId}` == image.frameId ? "500px" : "200px",
             }}
           >
             <img
@@ -134,11 +134,7 @@ const Video = ({ images, videoId }: Props) => {
           </div>
         ))}
       </div>
-      <Image
-        alt=""
-        style={{ width: "100%", height: "100vh" }}
-        src={`/data/video_frames/${video}/${frameId}.jpg`}
-      ></Image>
+
       <Modal
         transitionName=""
         centered
