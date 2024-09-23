@@ -38,6 +38,8 @@ export type ImgType = {
   frameId: string;
   youtubeUrl?: string;
   text?: string;
+  fps?: string;
+  listFrameId?: string[];
 };
 
 const { TextArea } = Input;
@@ -48,6 +50,7 @@ const mock_item = {
   frameId: "",
   youtubeUrl: "",
   img_path: "",
+  fps: "",
 };
 
 const PREFIX = "app_prefix";
@@ -72,7 +75,7 @@ const Home: NextPage = () => {
   function extractParts(str: string) {
     const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.jpg)$/;
     const match = str.match(regex);
-  
+
     if (match) {
       return {
         videoId: match[1],
@@ -82,83 +85,84 @@ const Home: NextPage = () => {
       return null;
     }
   }
-  
 
   const imgContent = useMemo(() => {
     const newImgSrc = groupByVideo(imgSource);
     return (
       <Row style={{ margin: 16 }} gutter={[16, 16]} justify="center">
-        {imgSource.length > 0 ? (
-          Object.keys(newImgSrc).map((e) => (
-            <Col span={24} key={e}>
-              <Typography.Text style={{ fontSize: 20, fontWeight: 700 }}>
-                {e}
-              </Typography.Text>
+        <>
+          {imgSource.length > 0 ? (
+            Object.keys(newImgSrc).map((e) => (
+              <Col span={24} key={e}>
+                <Typography.Text style={{ fontSize: 20, fontWeight: 700 }}>
+                  {e}
+                </Typography.Text>
 
-              <DeleteFilled
-                style={{ fontSize: 20, margin: 8, color: "red" }}
-                onClick={() => {
-                  const ignoredVideos = form.getFieldValue("ignoredVideos");
-                  if (ignoredVideos) {
-                    if (!ignoredVideos.includes(e)) {
-                      form.setFieldValue("ignoredVideos", [
-                        ...ignoredVideos,
-                        e,
-                      ]);
+                <DeleteFilled
+                  style={{ fontSize: 20, margin: 8, color: "red" }}
+                  onClick={() => {
+                    const ignoredVideos = form.getFieldValue("ignoredVideos");
+                    if (ignoredVideos) {
+                      if (!ignoredVideos.includes(e)) {
+                        form.setFieldValue("ignoredVideos", [
+                          ...ignoredVideos,
+                          e,
+                        ]);
+                      }
+                    } else {
+                      form.setFieldValue("ignoredVideos", [e]);
                     }
-                  } else {
-                    form.setFieldValue("ignoredVideos", [e]);
-                  }
-                }}
-                rev={undefined}
-              />
-              <Row gutter={[8, 8]}>
-                {newImgSrc[e].map((img) => (
-                  <Col key={img.frameId}>
-                    {asr ? (
-                      <AsrItem
-                        imgData={img}
-                        setVisible={setVisible}
-                        setModalItem={setModalItem}
-                      />
-                    ) : (
-                      <div className="">
-                        <p>
-                          Video ID:
-                          {extractParts(img.link ? img.link : "")?.videoId}
-                        </p>
-                        <Image
-                          style={{
-                            height: "120px",
-                            width: "160px",
-                          }}
-                          src={img.link}
-                          alt="aic-img"
-                          onClick={() => {
-                            setModalItem(img);
-                            setVisible(true);
-                          }}
-                          preview={false}
+                  }}
+                  rev={undefined}
+                />
+                <Row gutter={[8, 8]}>
+                  {newImgSrc[e].map((img) => (
+                    <Col key={img.frameId}>
+                      {asr ? (
+                        <AsrItem
+                          imgData={img}
+                          setVisible={setVisible}
+                          setModalItem={setModalItem}
                         />
+                      ) : (
+                        <div className="">
+                          <p>
+                            Video ID:
+                            {extractParts(img.link ? img.link : "")?.videoId}
+                          </p>
+                          <Image
+                            style={{
+                              height: "120px",
+                              width: "160px",
+                            }}
+                            src={img.link}
+                            alt="aic-img"
+                            onClick={() => {
+                              setModalItem(img);
+                              setVisible(true);
+                            }}
+                            preview={false}
+                          />
 
-                        <p className="">
-                          Frame ID:
-                          {extractParts(img.link ? img.link : "")?.frameId}
-                        </p>
-                      </div>
-                    )}
-                  </Col>
-                ))}
-              </Row>
-            </Col>
-          ))
-        ) : (
-          <img
-            style={{ width: "100%", height: "100vh" }}
-            src={"/no-data.svg"}
-            alt="nodata-img"
-          />
-        )}
+                          <p className="">
+                            Frame ID:
+                            {extractParts(img.link ? img.link : "")?.frameId}
+                          </p>
+                        </div>
+                      )}
+                    </Col>
+                  ))}
+                </Row>
+              </Col>
+            ))
+          ) : (
+            <img
+              style={{ width: "100%", height: "100vh" }}
+              src={"/no-data.svg"}
+              alt="nodata-img"
+            />
+          )}
+        </>
       </Row>
     );
   }, [asr, form, imgSource]);
@@ -180,8 +184,8 @@ const Home: NextPage = () => {
                 video: videoId,
                 frameId: frameId,
                 link: value.img_path.toString(),
-                mappedFrameId: "",
                 youtubeUrl: value.youtube_link.toString(),
+                fps: value.fps.toString(),
               };
             });
 
@@ -202,8 +206,8 @@ const Home: NextPage = () => {
                 video: videoId,
                 frameId: frameId,
                 link: value.img_path.toString(),
-                mappedFrameId: "",
                 youtubeUrl: value.youtube_link.toString(),
+                fps: value.fps.toString(),
               };
             });
 
@@ -214,21 +218,32 @@ const Home: NextPage = () => {
     }
   };
 
-  const handleQuery = () => {
+  const handleQuery = async () => {
     const { asrText, enString, limit, model } = form.getFieldsValue();
     if (searchOption === "asr") {
       API_SERVICES.ASR.asr(asrText, limit).then((responseData) => {
-        const newSource = responseData.map((value) => {
-          console.log(value);
-          return {
-            video: value.video_id,
-            frameId: value.frame_id.toString(),
-            link: `/data/video_frames/${value.video_id}/${
-              value.frame_id
-            }.jpg`,
-            text: value.text,
-          };
+        const newSource: ImgType[] = [];
+
+        responseData.forEach((value) => {
+          
+          value.listFrameId.forEach((frameId) => {
+            if(frameId != "") {
+              newSource.push({
+                video: value.video_id,
+                frameId: frameId,
+                link: `/data/video_frames/${value.video_id}/${frameId}.jpg`,
+                text: value.text,
+                fps: value.fps,
+                youtubeUrl: `https://www.youtube.com/watch?v=${value.prefix}k&t=${(
+                  parseInt(frameId) / parseInt(value.fps)
+                ).toString()}s`,
+              });
+            }
+           
+          });
         });
+
+        console.log(newSource);
         setImgSource(newSource);
       });
     } else {
@@ -238,14 +253,15 @@ const Home: NextPage = () => {
             extractParts(value.img_path.toString())?.videoId ?? "";
           const frameId: string =
             extractParts(value.img_path.toString())?.frameId ?? "";
-          console.log(value.img_path);
+          console.log("Minh");
+          console.log(value.fps.toString());
 
           return {
             video: videoId,
             frameId: frameId,
             link: value.img_path.toString(),
-            mappedFrameId: "",
             youtubeUrl: value.youtube_link.toString(),
+            fps: value.fps.toString(),
           };
         });
 
@@ -458,11 +474,11 @@ const Home: NextPage = () => {
             <Button
               onClick={() => {
                 window.open(
-                  `/videos/${modalItem.video}?video=${
-                    modalItem.video
+                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${
+                    modalItem.fps
                   }&frameId=${modalItem.frameId}&prefix=${extractVideoYoutubeId(
                     modalItem.youtubeUrl?.toString() || ""
-                  )}`, // Catch-all slug and query param
+                  )}`,
                   "_blank"
                 );
               }}

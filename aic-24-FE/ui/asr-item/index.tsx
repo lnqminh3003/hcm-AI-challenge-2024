@@ -47,9 +47,7 @@ const AsrItem = (props: Props) => {
             height: "120px",
             width: "160px",
           }}
-          src={`${extractBatch(imgData.video)}/${imgData.video}/${
-            imgData.frameId
-          }.jpg`}
+          src={imgData.link}
           alt="aic-img"
           preview={false}
         />

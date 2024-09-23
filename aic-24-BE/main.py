@@ -94,9 +94,7 @@ async def preload_model():
                     )
                     app.text_data[vid_id][start] = segment[
                         "text"
-                    ]
-                        
-    print(app.text_data) 
+                    ]                  
 
 
 class Query(BaseModel):
@@ -134,7 +132,6 @@ async def query(query: Query):
         del result[index]["filepath"]
 
     return {"data": result.tolist()}
-
 
 @app.post("/query")
 async def query(query: Query):
@@ -174,20 +171,26 @@ async def asrquery(asrquery: ASRQuery):
     res = []
     print(results)
     for r in results:
-        vid_id, frame_start, frame_end = r.decode("utf-8").split(
-            "-"
+        print( r.decode("utf-8"))
+        vid_id, frame_start, fps, prefix, frame_list  = r.decode("utf-8").split(
+            "<space>"
         )
 
         frame_start = int(float(frame_start) * 25)
-        frame_end = int(float(frame_end) * 25)
-        frame_mid = ((frame_start + frame_end) >> 1)
-        frame_mid -= frame_mid % 25
+        # frame_end = int(float(frame_end) * 25)
+        # frame_mid = ((frame_start + frame_end) >> 1)
+        # frame_mid -= frame_mid % 25
+
+        frame_list = frame_list.split("&")
 
         res.append(
             {
                 "text": app.text_data[vid_id][frame_start],
-                "frame_id": frame_mid,
                 "video_id": vid_id,
+                "start": frame_start,
+                "listFrameId" : frame_list,
+                "fps": fps,
+                "prefix": prefix,
             },
         )
 

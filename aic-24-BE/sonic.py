@@ -26,19 +26,31 @@ async def setup():
         file_path = os.path.join(asr_folder, file)
         with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)["segments"]
-
+            
             for segment in data:
-                await c.push(
-                    collection="asr",
-                    bucket="test",
-                    obj="{}-{}-{}".format(
-                        file.split(".")[0],
-                        segment["start"],
-                        segment["end"],
-                    ),
-                    text=segment["text"],
-                )
+                strings = ""
 
+                for child in segment["frame_list"]:
+                    if(strings == ""):
+                        strings = child
+                    strings = strings + "&" + child
+
+                try:
+                    await c.push(
+                        collection="asr",
+                        bucket="test",
+                        obj="{}<space>{}<space>{}<space>{}<space>{}".format(
+                            file.split(".")[0],
+                            segment["start"],
+                            segment["fps"],
+                            segment["prefix"],
+                            strings
+                        ),
+                        text= segment["text"],
+                    )
+                except Exception as e:
+                    print(strings)
+       
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()

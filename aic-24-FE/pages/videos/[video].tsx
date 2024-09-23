@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import { use, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import {  useEffect, useState } from "react";
 import { ImgType } from "..";
 import { Modal, Row, Col, Image, Button, message } from "antd";
-import { extractBatch, rmExt } from "src/functions";
+import { rmExt } from "src/functions";
 import { API_SERVICES } from "src/infra/https";
 import { NEXT_API_SESSION } from "@constants";
 import fs from "fs";
@@ -42,6 +42,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       video: video,
       frameId: file,
       youtubeUrl: "https://www.youtube.com/watch?v=5KiMl_1m5ck&t=786s",
+      fps: ""
     }));
 
   return {
@@ -54,7 +55,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
 const Video = ({ images, videoId }: Props) => {
   const router = useRouter();
-  const { frameId, video, prefix } = router.query;
+  const { frameId, video, prefix, fps } = router.query;
   const [visible, setVisible] = useState(false);
   const [modalItem, setModalItem] = useState<ImgType>(images[0]);
   const [confirmSubmit, SetConfirmSubmit] = useState(false);
@@ -152,11 +153,12 @@ const Video = ({ images, videoId }: Props) => {
           alt="aic-img"
         />
         <h4>{modalItem.video + "/" + modalItem.frameId}</h4>
+        <h4>{parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")}</h4>
         <Button
           onClick={() => {
             window.open(
               `https://www.youtube.com/watch?v=${prefix}k&t=${(
-                parseInt(modalItem.frameId) / 25
+                parseInt(modalItem.frameId) / parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
               ).toString()}s`
             );
           }}

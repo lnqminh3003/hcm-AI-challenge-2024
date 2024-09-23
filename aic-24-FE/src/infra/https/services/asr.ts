@@ -7,7 +7,7 @@ const ASRService = {
     axiosInstance
       .post<Asr[]>(APIS.asr.ASR, {
         text: text || "a man",
-        top: top || 400,
+        top: top || 200,
       })
       .then((res) => res.data),
 };

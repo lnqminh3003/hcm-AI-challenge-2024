@@ -4,7 +4,8 @@ export type Query = {
   frameid: string;
   youtube_url: string;
   img_path: string;
-  youtube_link: string;
+  youtube_link: string; 
+  fps: string;
 };
 
 export type RQuery = {
