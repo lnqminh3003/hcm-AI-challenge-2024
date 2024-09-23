@@ -13,23 +13,17 @@ type Props = {
 const AsrItem = (props: Props) => {
   const { imgData, setModalItem, setVisible } = props;
 
-  const handleYoutubeLink = () => {
-    API_SERVICES.QUERY.map(imgData.video, imgData.frameId).then(
-      (responseData) => {
-        setModalItem({
-          link: imgData.link,
-          video: imgData.video,
-          frameId: imgData.frameId,
-          youtubeUrl: responseData.data.youtubeLink,
-          text: imgData.text,
-        });
-      }
-    );
-  };
   return (
     <Card
       onClick={() => {
-        handleYoutubeLink();
+        setModalItem({
+          link: imgData.link,
+          video: imgData.video,
+          frameId: `${imgData.frameId}.jpg`,
+          youtubeUrl: imgData.youtubeUrl,
+          text: imgData.text,
+          fps: imgData.fps,
+        });
         setVisible(true);
       }}
       style={{ borderRadius: 0, padding: 0 }}
@@ -44,8 +38,8 @@ const AsrItem = (props: Props) => {
         <Image
           style={{
             borderRadius: 0,
-            height: "120px",
-            width: "160px",
+            height: "160px",
+            width: "213px",
           }}
           src={imgData.link}
           alt="aic-img"

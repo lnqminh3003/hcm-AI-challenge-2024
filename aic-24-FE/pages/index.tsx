@@ -131,10 +131,11 @@ const Home: NextPage = () => {
                             {extractParts(img.link ? img.link : "")?.videoId}
                           </p>
                           <Image
-                            style={{
-                              height: "120px",
-                              width: "160px",
-                            }}
+                           style={{
+                            borderRadius: 0,
+                            height: "160px",
+                            width: "213px",
+                          }}
                             src={img.link}
                             alt="aic-img"
                             onClick={() => {
@@ -440,8 +441,8 @@ const Home: NextPage = () => {
           src={modalItem.link}
           alt="aic-img"
         />
-        <h4>{modalItem.video + "/" + modalItem.frameId}</h4>
-        <Row gutter={[8, 8]}>
+        <p className="text-2xl font-bold">{modalItem.video + "/" + modalItem.frameId}</p>
+        <Row gutter={[8, 8]} className="mt-4">
           <Col>
             <Button
               onClick={() => {
