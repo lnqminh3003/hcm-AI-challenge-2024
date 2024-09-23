@@ -373,10 +373,10 @@
   "resolved" "https://registry.npmjs.org/@google-cloud/promisify/-/promisify-4.0.0.tgz"
   "version" "4.0.0"
 
-"@google-cloud/translate@^8.0.2":
-  "integrity" "sha512-c9VXb0V/OzusaHMPh/hjAmaxPZXtNMEr1cRRHd2rRgsGZLSde7vU8rIsD9F959O7US4uFSkLxqjiyqYm1ConJA=="
-  "resolved" "https://registry.npmjs.org/@google-cloud/translate/-/translate-8.3.0.tgz"
-  "version" "8.3.0"
+"@google-cloud/translate@^8.5.0":
+  "integrity" "sha512-avQa3WLkO3PSk2fiV6Af/PmeDnM6XWGDgO+Z+hZ/FZpBRMjCW1Px9MNLbM1sBKGjt/uM8aOGHqow/AAR7lLsUA=="
+  "resolved" "https://registry.npmjs.org/@google-cloud/translate/-/translate-8.5.0.tgz"
+  "version" "8.5.0"
   dependencies:
     "@google-cloud/common" "^5.0.0"
     "@google-cloud/promisify" "^4.0.0"

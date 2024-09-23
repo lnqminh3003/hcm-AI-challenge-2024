@@ -309,31 +309,36 @@ const Home: NextPage = () => {
   const handleTranslate = async () => {
     const queryString = form.getFieldValue("queryString");
     if (checkLiveSearch(queryString, true)) {
-      const CREDENTIALS = JSON.parse(NEXT_API_CREDENTIAL || "");
-
-      const translate = new Translate.v2.Translate({
-        credentials: CREDENTIALS,
-        projectId: CREDENTIALS.project_id,
-      });
       try {
-        let [response] = await translate.translate(queryString, {
-          from: "vi",
-          to: "en",
+        const response = await fetch("/api/translate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ queryString }),
         });
-        form.setFieldValue("enString", response);
+  
+        const data = await response.json();
+  
+        if (data.error) {
+          console.error(`Translation error: ${data.error}`);
+        } else {
+          console.log(`Translated text: ${data.translatedText}`);
+          form.setFieldValue("enString", data.translatedText);
+        }
       } catch (error) {
-        console.log(`Error at translateText --> ${error}`);
-        return "";
+        console.error(`Error during translation: ${error}`);
       }
     }
   };
+  
 
   return (
     <>
       <Head>
         <title>AIC 2024</title>
       </Head>
-      <Form form={form} style={{ padding: 16 }}>
+      <Form form={form} style={{ padding: 16}}>
         <Row gutter={[12, 0]}>
           <Col span={24}>
             <Typography.Text style={{ fontSize: "24px" }}>
@@ -348,7 +353,7 @@ const Home: NextPage = () => {
                 }}
                 showCount
                 maxLength={1000}
-                style={{ height: 120, marginBottom: 24 }}
+                style={{ height: 120, marginBottom: 24, borderWidth:3  }}
                 placeholder="Vi Text"
               />
             </Item>
@@ -361,14 +366,14 @@ const Home: NextPage = () => {
                 }}
                 showCount
                 maxLength={1000}
-                style={{ height: 120, marginBottom: 24 }}
+                style={{ height: 120, marginBottom: 24, borderWidth:3 }}
                 placeholder="Eng Text"
               />
             </Item>
           </Col>
           <Col span={12}>
             <Row gutter={[8, 8]}>
-              <Col span={12}>
+              <Col span={12} >
                 <Item name="limit">
                   <Input addonBefore="Limit" placeholder="400" />
                 </Item>
@@ -423,7 +428,7 @@ const Home: NextPage = () => {
         <IgnoredVideos formInstance={form} />
       </Form>
 
-      <Divider plain> Images </Divider>
+      <div className="font-bold text-2xl text-center w-full"> Images </div>
       {imgContent}
       <Modal
         transitionName=""
