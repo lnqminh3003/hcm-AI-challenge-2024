@@ -47,7 +47,7 @@ const AsrItem = (props: Props) => {
         />
       }
     >
-      <Typography.Text style={{ fontSize: 8 }}>
+      <Typography.Text style={{ fontSize: 10, maxWidth: 160 }}>
         {imgData.text || "Place Holder"}
       </Typography.Text>
     </Card>

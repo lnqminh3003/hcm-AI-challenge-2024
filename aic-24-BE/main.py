@@ -101,6 +101,8 @@ class Query(BaseModel):
     text: str
     top: int = 100
     model: str = "b16"
+    filter_people_mode: str = "off"
+    num_people: int = 1
     with_weith: bool = True
     text_gamma: float = (1.0,)
     skip: int = (25,)
@@ -136,7 +138,7 @@ async def query(query: Query):
 @app.post("/query")
 async def query(query: Query):
     model = app.model[query.model]
-    result = model.predict(query.text, query.top)
+    result = model.predict(query.text, query.top, query.filter_people_mode, query.num_people)
 
     return {"data": result}
 

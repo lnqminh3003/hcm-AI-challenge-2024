@@ -73,6 +73,8 @@ class NitzcheCLIP:
             return [path for path in path_list if self.num_people[path] == num_people]
 
     def predict(self, text_query, top=500, filter_people_mode='off', num_people=0):
+        print(num_people)
+        print(filter_people_mode)
         features_text = self.featurize_text(text_query)    
         results = np.squeeze(np.matmul(self.image_feature, features_text.T))
         

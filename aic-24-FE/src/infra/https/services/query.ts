@@ -4,12 +4,14 @@ import { RKeyFrame, RQuery } from "../entities/query/query";
 
 
 const QueryService = {
-  query: (text: string, top: string, model: string) =>
+  query: (text: string, top: string, model: string, filter_people_mode: string, num_people: string) =>
     axiosInstance
       .post<RQuery>(APIS.query.QUERY, {
         text: text || "a man",
         top: top || 400,
         model: model || "b16",
+        filter_people_mode: filter_people_mode || "off",
+        num_people: num_people || 2,
       })
       .then((res) => res.data),
 
