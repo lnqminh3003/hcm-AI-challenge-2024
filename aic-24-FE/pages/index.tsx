@@ -73,8 +73,7 @@ const Home: NextPage = () => {
   const [asr, SetAsr] = useState(false);
 
   function extractParts(str: string) {
-    // const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.jpg)$/;
-    const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.webp)$/;
+    const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.jpg)$/;
     const match = str.match(regex);
 
     if (match) {
@@ -132,11 +131,11 @@ const Home: NextPage = () => {
                             {extractParts(img.link ? img.link : "")?.videoId}
                           </p>
                           <Image
-                            style={{
-                              borderRadius: 0,
-                              height: "160px",
-                              width: "213px",
-                            }}
+                           style={{
+                            borderRadius: 0,
+                            height: "160px",
+                            width: "213px",
+                          }}
                             src={img.link}
                             alt="aic-img"
                             onClick={() => {
@@ -227,14 +226,13 @@ const Home: NextPage = () => {
         const newSource: ImgType[] = [];
 
         responseData.forEach((value) => {
-
+          
           value.listFrameId.forEach((frameId) => {
-            if (frameId != "") {
+            if(frameId != "") {
               newSource.push({
                 video: value.video_id,
                 frameId: frameId,
-                // link: `/data/video_frames/${value.video_id}/${frameId}.jpg`,
-                link: `/data/video_frames/${value.video_id}/${frameId}.webp`,
+                link: `/data/video_frames/${value.video_id}/${frameId}.jpg`,
                 text: value.text,
                 fps: value.fps,
                 youtubeUrl: `https://www.youtube.com/watch?v=${value.prefix}k&t=${(
@@ -242,7 +240,7 @@ const Home: NextPage = () => {
                 ).toString()}s`,
               });
             }
-
+           
           });
         });
 
@@ -319,9 +317,9 @@ const Home: NextPage = () => {
           },
           body: JSON.stringify({ queryString }),
         });
-
+  
         const data = await response.json();
-
+  
         if (data.error) {
           console.error(`Translation error: ${data.error}`);
         } else {
@@ -333,14 +331,14 @@ const Home: NextPage = () => {
       }
     }
   };
-
+  
 
   return (
     <>
       <Head>
         <title>AIC 2024</title>
       </Head>
-      <Form form={form} style={{ padding: 16 }}>
+      <Form form={form} style={{ padding: 16}}>
         <Row gutter={[12, 0]}>
           <Col span={24}>
             <Typography.Text style={{ fontSize: "24px" }}>
@@ -355,7 +353,7 @@ const Home: NextPage = () => {
                 }}
                 showCount
                 maxLength={1000}
-                style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
+                style={{ height: 120, marginBottom: 24, borderWidth:3  }}
                 placeholder="Vi Text"
               />
             </Item>
@@ -368,7 +366,7 @@ const Home: NextPage = () => {
                 }}
                 showCount
                 maxLength={1000}
-                style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
+                style={{ height: 120, marginBottom: 24, borderWidth:3 }}
                 placeholder="Eng Text"
               />
             </Item>
@@ -482,7 +480,8 @@ const Home: NextPage = () => {
             <Button
               onClick={() => {
                 window.open(
-                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${modalItem.fps
+                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${
+                    modalItem.fps
                   }&frameId=${modalItem.frameId}&prefix=${extractVideoYoutubeId(
                     modalItem.youtubeUrl?.toString() || ""
                   )}`,

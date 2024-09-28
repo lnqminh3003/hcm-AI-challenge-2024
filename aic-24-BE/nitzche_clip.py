@@ -91,8 +91,8 @@ class NitzcheCLIP:
             
         return [
             {
-                'img_path': os.path.join('./data/video_frames', vid, timeframe.replace('.jpg', '.webp')),
-                'youtube_link': f"{self.youtube_link[vid]}&t={int(int(timeframe.split('.')[0])//self.fps[vid])}s",
+                'img_path': os.path.join('./data/video_frames', vid, timeframe),
+                'youtube_link': f"{self.youtube_link[vid]}&t={int(int(timeframe.split('.')[0])/self.fps[vid])}s",
                 'fps': self.fps[vid]
             } 
             for vid, timeframe_list in results_dict.items() for timeframe in timeframe_list

@@ -6,8 +6,7 @@ export const extractBatch = (str: string) => {
 };
 
 export const rmExt = (str: string) => {
-  // return str.replace(/\.jpg/, "");
-  return str.replace(/\.webp/, "");
+  return str.replace(/\.jpg/, "");
 };
 
 export const checkLiveSearch = (str: string, isLiveSearch: boolean) => {

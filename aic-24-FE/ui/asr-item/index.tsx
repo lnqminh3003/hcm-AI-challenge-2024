@@ -19,8 +19,7 @@ const AsrItem = (props: Props) => {
         setModalItem({
           link: imgData.link,
           video: imgData.video,
-          // frameId: `${imgData.frameId}.jpg`,
-          frameId: `${imgData.frameId}.webp`,
+          frameId: `${imgData.frameId}.jpg`,
           youtubeUrl: imgData.youtubeUrl,
           text: imgData.text,
           fps: imgData.fps,
