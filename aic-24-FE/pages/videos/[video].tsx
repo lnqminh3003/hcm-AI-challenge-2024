@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ImgType } from "..";
 import { Modal, Row, Col, Image, Button, message } from "antd";
 import { rmExt } from "src/functions";
@@ -36,7 +36,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   const files = fs.readdirSync(directoryPath);
   const imagePaths = files
-    .filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file))
+    // .filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file))
+    .filter((file) => /\.(webp|jpeg|png|gif)$/i.test(file))
     .map((file) => ({
       link: `/data/video_frames/${video}/${file}`,
       video: video,
@@ -78,8 +79,7 @@ const Video = ({ images, videoId }: Props) => {
       }
 
       await API_SERVICES.Log.log(
-        `Status: ${data.status}, Submission: ${data.submission}, Video: ${
-          modalItem.video
+        `Status: ${data.status}, Submission: ${data.submission}, Video: ${modalItem.video
         }, Frame: ${rmExt(modalItem.frameId)}`
       );
     } catch (error) {
@@ -157,7 +157,7 @@ const Video = ({ images, videoId }: Props) => {
         <Button
           onClick={() => {
             window.open(
-              `https://www.youtube.com/watch?v=${prefix}k&t=${(
+              `https://www.youtube.com/watch?v=${prefix}k&t=${Math.floor(
                 parseInt(modalItem.frameId) / parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
               ).toString()}s`
             );
