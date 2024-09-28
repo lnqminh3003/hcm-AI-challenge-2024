@@ -65,15 +65,17 @@ const SEARCH_OPTIONS = [
 
 const Home: NextPage = () => {
   const [form] = useForm();
-  const [searchOption, setSearchOption] = useState<String>("live-search");
+  const [searchOption, setSearchOption] = useState<String>("simple");
   const [imgSource, setImgSource] = useState<ImgType[]>([]);
   const [visible, setVisible] = useState(false);
   const [modalItem, setModalItem] = useState<ImgType>(mock_item);
   const [confirmSubmit, SetConfirmSubmit] = useState(false);
   const [asr, SetAsr] = useState(false);
+  const [numPeople, setNumPeople] = useState('');
 
   function extractParts(str: string) {
-    const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.jpg)$/;
+    // const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.jpg)$/;
+    const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.webp)$/;
     const match = str.match(regex);
 
     if (match) {
@@ -131,11 +133,11 @@ const Home: NextPage = () => {
                             {extractParts(img.link ? img.link : "")?.videoId}
                           </p>
                           <Image
-                           style={{
-                            borderRadius: 0,
-                            height: "160px",
-                            width: "213px",
-                          }}
+                            style={{
+                              borderRadius: 0,
+                              height: "160px",
+                              width: "213px",
+                            }}
                             src={img.link}
                             alt="aic-img"
                             onClick={() => {
@@ -226,21 +228,20 @@ const Home: NextPage = () => {
         const newSource: ImgType[] = [];
 
         responseData.forEach((value) => {
-          
           value.listFrameId.forEach((frameId) => {
-            if(frameId != "") {
+            if (frameId != "") {
               newSource.push({
                 video: value.video_id,
                 frameId: frameId,
-                link: `/data/video_frames/${value.video_id}/${frameId}.jpg`,
+                // link: `/data/video_frames/${value.video_id}/${frameId}.jpg`,
+                link: `/data/video_frames/${value.video_id}/${frameId}.webp`,
                 text: value.text,
                 fps: value.fps,
-                youtubeUrl: `https://www.youtube.com/watch?v=${value.prefix}k&t=${(
-                  parseInt(frameId) / parseInt(value.fps)
-                ).toString()}s`,
+                youtubeUrl: `https://www.youtube.com/watch?v=${
+                  value.prefix
+                }k&t=${(parseInt(frameId) / parseInt(value.fps)).toString()}s`,
               });
             }
-           
           });
         });
 
@@ -317,9 +318,9 @@ const Home: NextPage = () => {
           },
           body: JSON.stringify({ queryString }),
         });
-  
+
         const data = await response.json();
-  
+
         if (data.error) {
           console.error(`Translation error: ${data.error}`);
         } else {
@@ -331,14 +332,13 @@ const Home: NextPage = () => {
       }
     }
   };
-  
 
   return (
     <>
       <Head>
         <title>AIC 2024</title>
       </Head>
-      <Form form={form} style={{ padding: 16}}>
+      <Form form={form} style={{ padding: 16 }}>
         <Row gutter={[12, 0]}>
           <Col span={24}>
             <Typography.Text style={{ fontSize: "24px" }}>
@@ -353,7 +353,7 @@ const Home: NextPage = () => {
                 }}
                 showCount
                 maxLength={1000}
-                style={{ height: 120, marginBottom: 24, borderWidth:3  }}
+                style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
                 placeholder="Vi Text"
               />
             </Item>
@@ -366,14 +366,28 @@ const Home: NextPage = () => {
                 }}
                 showCount
                 maxLength={1000}
-                style={{ height: 120, marginBottom: 24, borderWidth:3 }}
+                style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
                 placeholder="Eng Text"
               />
             </Item>
           </Col>
-          <Col span={12}>
+          <Col span={12} className="-mt-4 flex flex-col">
+            <div className="-mt-4 mb-8">
+              <div className="flex flex-row items-center">
+                <p>Number of people:</p>
+                <input
+                  type="number"
+                  id="numPeople"
+                  name="numPeople"
+                  value={numPeople}
+                  onChange={(e) => setNumPeople(e.target.value)}
+                  placeholder="Enter number of people"
+                  className="border-2 border-gray-300 rounded px-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
             <Row gutter={[8, 8]}>
-              <Col span={12} >
+              <Col span={12}>
                 <Item name="limit">
                   <Input addonBefore="Limit" placeholder="400" />
                 </Item>
@@ -387,7 +401,7 @@ const Home: NextPage = () => {
                   Query
                 </Button>
               </Col>
-              <Col span={24}>
+              <Col span={24} className="-mt-4">
                 <Radio.Group
                   options={SEARCH_OPTIONS}
                   onChange={({ target: { value } }: RadioChangeEvent) => {
@@ -401,19 +415,20 @@ const Home: NextPage = () => {
                   value={searchOption}
                 />
               </Col>
-              <Col span={12}>
+              {/* <Col span={12}>
                 <ModelOption />
-              </Col>
+              </Col> */}
             </Row>
           </Col>
           {searchOption == "asr" ? (
-            <Col span={12}>
+            <Col span={12} className="-mt-4">
               <Row gutter={[16, 16]}>
                 <ASRForm form={form} />
               </Row>
+              <div style={{ height: 30 }}></div>
             </Col>
           ) : (
-            <div style={{ height: 160 }}></div>
+            <div style={{ height: 100 }}></div>
           )}
         </Row>
         <Affix offsetTop={10}>
@@ -446,7 +461,9 @@ const Home: NextPage = () => {
           src={modalItem.link}
           alt="aic-img"
         />
-        <p className="text-2xl font-bold">{modalItem.video + "/" + modalItem.frameId}</p>
+        <p className="text-2xl font-bold">
+          {modalItem.video + "/" + modalItem.frameId}
+        </p>
         <Row gutter={[8, 8]} className="mt-4">
           <Col>
             <Button
@@ -480,8 +497,7 @@ const Home: NextPage = () => {
             <Button
               onClick={() => {
                 window.open(
-                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${
-                    modalItem.fps
+                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${modalItem.fps
                   }&frameId=${modalItem.frameId}&prefix=${extractVideoYoutubeId(
                     modalItem.youtubeUrl?.toString() || ""
                   )}`,
