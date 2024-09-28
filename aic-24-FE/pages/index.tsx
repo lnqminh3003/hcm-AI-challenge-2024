@@ -182,47 +182,55 @@ const Home: NextPage = () => {
     if (!engText) {
       await handleTranslate();
       if (enString && checkLiveSearch(queryString, isLiveSearch)) {
-        API_SERVICES.QUERY.query(enString, limit, model, numberPeopleOption, numPeople).then(
-          (responseData) => {
-            const newSource = responseData.data.map((value) => {
-              const videoId: string =
-                extractParts(value.img_path.toString())?.videoId ?? "";
-              const frameId: string =
-                extractParts(value.img_path.toString())?.frameId ?? "";
-              return {
-                video: videoId,
-                frameId: frameId,
-                link: value.img_path.toString(),
-                youtubeUrl: value.youtube_link.toString(),
-                fps: value.fps.toString(),
-              };
-            });
+        API_SERVICES.QUERY.query(
+          enString,
+          limit,
+          model,
+          numberPeopleOption,
+          numPeople
+        ).then((responseData) => {
+          const newSource = responseData.data.map((value) => {
+            const videoId: string =
+              extractParts(value.img_path.toString())?.videoId ?? "";
+            const frameId: string =
+              extractParts(value.img_path.toString())?.frameId ?? "";
+            return {
+              video: videoId,
+              frameId: frameId,
+              link: value.img_path.toString(),
+              youtubeUrl: value.youtube_link.toString(),
+              fps: value.fps.toString(),
+            };
+          });
 
-            setImgSource(newSource);
-          }
-        );
+          setImgSource(newSource);
+        });
       }
     } else {
       if (enString && checkLiveSearch(enString, isLiveSearch)) {
-        API_SERVICES.QUERY.query(enString, limit, model, numberPeopleOption, numPeople).then(
-          (responseData) => {
-            const newSource = responseData.data.map((value) => {
-              const videoId: string =
-                extractParts(value.img_path.toString())?.videoId ?? "";
-              const frameId: string =
-                extractParts(value.img_path.toString())?.frameId ?? "";
-              return {
-                video: videoId,
-                frameId: frameId,
-                link: value.img_path.toString(),
-                youtubeUrl: value.youtube_link.toString(),
-                fps: value.fps.toString(),
-              };
-            });
+        API_SERVICES.QUERY.query(
+          enString,
+          limit,
+          model,
+          numberPeopleOption,
+          numPeople
+        ).then((responseData) => {
+          const newSource = responseData.data.map((value) => {
+            const videoId: string =
+              extractParts(value.img_path.toString())?.videoId ?? "";
+            const frameId: string =
+              extractParts(value.img_path.toString())?.frameId ?? "";
+            return {
+              video: videoId,
+              frameId: frameId,
+              link: value.img_path.toString(),
+              youtubeUrl: value.youtube_link.toString(),
+              fps: value.fps.toString(),
+            };
+          });
 
-            setImgSource(newSource);
-          }
-        );
+          setImgSource(newSource);
+        });
       }
     }
   };
@@ -254,28 +262,32 @@ const Home: NextPage = () => {
         setImgSource(newSource);
       });
     } else {
-      API_SERVICES.QUERY.query(enString, limit, model, numberPeopleOption, numPeople).then(
-        (responseData) => {
-          const newSource = responseData.data.map((value) => {
-            const videoId: string =
-              extractParts(value.img_path.toString())?.videoId ?? "";
-            const frameId: string =
-              extractParts(value.img_path.toString())?.frameId ?? "";
-            console.log("Minh");
-            console.log(value.fps.toString());
+      API_SERVICES.QUERY.query(
+        enString,
+        limit,
+        model,
+        numberPeopleOption,
+        numPeople
+      ).then((responseData) => {
+        const newSource = responseData.data.map((value) => {
+          const videoId: string =
+            extractParts(value.img_path.toString())?.videoId ?? "";
+          const frameId: string =
+            extractParts(value.img_path.toString())?.frameId ?? "";
+          console.log("Minh");
+          console.log(value.fps.toString());
 
-            return {
-              video: videoId,
-              frameId: frameId,
-              link: value.img_path.toString(),
-              youtubeUrl: value.youtube_link.toString(),
-              fps: value.fps.toString(),
-            };
-          });
+          return {
+            video: videoId,
+            frameId: frameId,
+            link: value.img_path.toString(),
+            youtubeUrl: value.youtube_link.toString(),
+            fps: value.fps.toString(),
+          };
+        });
 
-          setImgSource(newSource);
-        }
-      );
+        setImgSource(newSource);
+      });
     }
   };
 
@@ -393,13 +405,28 @@ const Home: NextPage = () => {
               </div>
             </div>
 
-            <Col className="mb-4">
+            <Col className="mb-8">
               <Radio.Group
                 options={NUMPEOPLE_OPTIONS}
                 onChange={({ target: { value } }: RadioChangeEvent) => {
                   setNumberPeoplehOption(value);
                 }}
                 value={numberPeopleOption}
+              />
+            </Col>
+
+            <Col className="mb-4">
+              <Radio.Group
+                options={SEARCH_OPTIONS}
+                onChange={({ target: { value } }: RadioChangeEvent) => {
+                  setSearchOption(value);
+                  if (value === "asr") {
+                    SetAsr(true);
+                  } else {
+                    SetAsr(false);
+                  }
+                }}
+                value={searchOption}
               />
             </Col>
 
@@ -418,20 +445,7 @@ const Home: NextPage = () => {
                   Query
                 </Button>
               </Col>
-              <Col span={24}>
-                <Radio.Group
-                  options={SEARCH_OPTIONS}
-                  onChange={({ target: { value } }: RadioChangeEvent) => {
-                    setSearchOption(value);
-                    if (value === "asr") {
-                      SetAsr(true);
-                    } else {
-                      SetAsr(false);
-                    }
-                  }}
-                  value={searchOption}
-                />
-              </Col>
+
               <Col span={12}>
                 <ModelOption />
               </Col>
