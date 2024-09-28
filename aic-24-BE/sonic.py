@@ -14,7 +14,7 @@ async def setup():
         host="127.0.0.1",
         port=1491,
         password="admin",
-        max_connections=100,
+        max_connections=1000,
     )
     await c.channel(Channel.INGEST)
 
@@ -24,6 +24,7 @@ async def setup():
             files.append(file)
     for file in tqdm(files):
         file_path = os.path.join(asr_folder, file)
+        print(f'Processing {file_path}')
         with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)["segments"]
             
@@ -49,7 +50,7 @@ async def setup():
                         text= segment["text"],
                     )
                 except Exception as e:
-                    print(strings)
+                    print("memaybeo")
        
 
 if __name__ == "__main__":
