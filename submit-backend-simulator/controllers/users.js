@@ -1,51 +1,40 @@
-const User = require("../models/resultModel");
+const Query = require("../models/resultModel");
+// {
+//     "queryName": "query 2",
+//     "user":  {
+//         "id": "Bao",
+//         "videoId": "123123",
+//         "frameId": "456456"
+//       }
+//   }
+  
+const addUserToQuery = async (req, res) => {
+  try {
+    const { queryName, user } = req.body; 
 
-const list_user = (req, res) => {
-  User.find({})
-    .select("username")
-    .then((users) => {
-      res.json(users);
-    })
-    .catch((err) => {
-      res.status(400).send(err.errors);
-    });
-};
+    if (!queryName || !user) {
+      return res
+        .status(400)
+        .json({ message: "queryName and user are required" });
+    }
 
-const get_user = (req, res) => {
-  User.findById(req.params.userId)
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      res.status(400).send(err.errors);
-    });
-};
+    let query = await Query.findOne({ queryName });
 
-const create_user = (req, res) => {
-  const newUser = new User(req.body);
+    if (!query) {
+      query = new Query({ queryName, users: new Map() }); 
+    }
 
-  newUser.save((err) => {
-    if (err) return res.status(500).send(err);
-    return res.status(200).send(newUser);
-  });
-};
+    query.users.set(user.id, user); 
 
-const update_user = (req, res) => {};
+    await query.save();
 
-const delete_user = (req, res) => {
-  User.findByIdAndRemove(req.params.userId, (err, data) => {
-    if (err) return res.status(500).send(err);
-    const response = {
-      message: "User successfully deleted",
-    };
-    return res.status(200).send(response);
-  });
+    res.status(200).json({ message: "User added successfully", query });
+  } catch (error) {
+    console.error("Error adding user to query:", error);
+    res.status(500).json({ message: "Error adding user to query" });
+  }
 };
 
 module.exports = {
-  list_user,
-  get_user,
-  create_user,
-  delete_user,
-  update_user,
+  addUserToQuery,
 };

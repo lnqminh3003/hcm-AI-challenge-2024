@@ -4,6 +4,8 @@ const fs = require('fs');
 const config = require('./config/config');
 const app = express();
 
+app.use(express.json());
+
 // run server
 app.listen(config.server.port, (err) => {
   if(err) {
