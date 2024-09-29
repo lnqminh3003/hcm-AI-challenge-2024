@@ -1,22 +1,21 @@
 const mongoose = require("mongoose");
 
-// Define the user schema
 const userSchema = new mongoose.Schema({
   id: { type: String, required: true },
   videoId: { type: String, required: true },
-  frameId: { type: String, required: true }
+  frameId: { type: String, required: true },
+  time: { type: Date, default: Date.now }, 
 });
 
-// Define the query schema
+
 const querySchema = new mongoose.Schema({
   queryName: { type: String, required: true },
   users: {
     type: Map,
-    of: userSchema  // Use the user schema for the values in the Map
+    of: userSchema  
   }
 });
 
-// Create a model for the queries collection
-const Query = mongoose.model('Query', querySchema, 'AIC'); // 'queries' is the name of the collection
+const Query = mongoose.model('Query', querySchema, 'AIC'); 
 
 module.exports = Query;

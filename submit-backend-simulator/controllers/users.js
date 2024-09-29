@@ -7,10 +7,27 @@ const Query = require("../models/resultModel");
 //         "frameId": "456456"
 //       }
 //   }
-  
+
+const getUsersByQuery = async (req, res) => {
+  try {
+    const { queryName } = req.params; 
+
+    const query = await Query.findOne({ queryName });
+
+    if (!query) {
+      return res.status(404).json({ message: "Query not found" });
+    }
+
+    res.status(200).json({ users: query.users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Error fetching users" });
+  }
+};
+
 const addUserToQuery = async (req, res) => {
   try {
-    const { queryName, user } = req.body; 
+    const { queryName, user } = req.body;
 
     if (!queryName || !user) {
       return res
@@ -21,10 +38,12 @@ const addUserToQuery = async (req, res) => {
     let query = await Query.findOne({ queryName });
 
     if (!query) {
-      query = new Query({ queryName, users: new Map() }); 
+      query = new Query({ queryName, users: new Map() });
     }
 
-    query.users.set(user.id, user); 
+    user.time = new Date();
+
+    query.users.set(user.id, user);
 
     await query.save();
 
@@ -36,5 +55,6 @@ const addUserToQuery = async (req, res) => {
 };
 
 module.exports = {
+  getUsersByQuery,
   addUserToQuery,
 };
