@@ -1,0 +1,25 @@
+# Node.js modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# OS generated files
+.DS_Store
+
+# Optional npm cache directory
+.npm
+
+# Miscellaneous
+*.swp
+*~
+
+# Coverage directory for testing frameworks
+coverage/
