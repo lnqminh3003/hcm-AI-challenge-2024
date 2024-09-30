@@ -22,7 +22,7 @@ function SubmitPage() {
 
   const onClickSubmit = async () => {
     try {
-      const res = await axios.post("http://localhost:2000/add-user-to-query", {
+      const res = await axios.post("https://aic24.onrender.com/add-user-to-query", {
         "queryName": selectedOption,
         "user": {
           "id": nameOption,

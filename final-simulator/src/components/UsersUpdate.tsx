@@ -35,7 +35,7 @@ const UsersUpdate = ({ videoId, frameId, timeLeft }: any) => {
   };
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:2000");
+    const socket = new WebSocket("https://aic24.onrender.com");
 
     socket.onopen = () => {
       console.log("WebSocket connection established");
