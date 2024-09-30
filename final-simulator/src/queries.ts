@@ -22,6 +22,8 @@ const queries: QueriesType = {
     "Có đèn trang trí ở phía trên các con đường giữa các toàn nhà.",
     "Có các đèn trang trí hình con cá, hình lập phương có một viên ngọc màu đỏ ở giữa.",
     "Cuối cùng là hình ảnh cây thông với rất nhiều đèn được quấn xung quanh.",
+    "123123",
+    "456456"
   ],
   "14": ["53", "54", "55", "56"],
   "15": ["57", "58", "59", "60"],

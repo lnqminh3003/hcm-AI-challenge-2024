@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 
 interface CountdownTimerProps {
-  queries: string[];
+  queries: any;
+
+  timeLeft: any;
+
+  setTimeLeft: any;
 }
 
-const CountdownTimer: React.FC<CountdownTimerProps> = ({ queries }) => {
-  const [timeLeft, setTimeLeft] = useState(4 * 6);
+const CountdownTimer: React.FC<CountdownTimerProps> = ({
+  queries,
+  timeLeft,
+  setTimeLeft,
+}) => {
   const [query, setQuery] = useState<string[]>([]);
 
   var current = 0;
@@ -14,7 +21,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ queries }) => {
     setQuery([queries[0]]);
 
     const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
+      setTimeLeft((prevTime: any) => {
         if (prevTime === 1) {
           clearInterval(timer);
           return 0;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import queries from "../queries";
 import CountdownTimer from "../components/CountTimeClock";
+import UsersUpdate from "../components/UsersUpdate";
 
 type PageData = string[];
 
@@ -11,6 +12,7 @@ function PageQuery() {
 
   const [pageData, setPageData] = useState<PageData>([]);
   const [startTime, setStartTime] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(4 * 6);
 
   useEffect(() => {
     if (number && queries[number]) {
@@ -29,7 +31,11 @@ function PageQuery() {
       <div className="text-4xl font-bold">QUERY {number}</div>
 
       {startTime ? (
-        <CountdownTimer queries={pageData} />
+        <CountdownTimer
+          queries={pageData}
+          timeLeft={timeLeft}
+          setTimeLeft={setTimeLeft}
+        />
       ) : (
         <button
           onClick={() => setStartTime(true)}
@@ -38,6 +44,8 @@ function PageQuery() {
           Start
         </button>
       )}
+
+      <UsersUpdate videoId={pageData[4]} frameId={pageData[5]} timeLeft={timeLeft} />
     </div>
   );
 }

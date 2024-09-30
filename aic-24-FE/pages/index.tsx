@@ -363,6 +363,15 @@ const Home: NextPage = () => {
             <Typography.Text style={{ fontSize: "24px" }}>
               AIC 2024 - Nitzche
             </Typography.Text>
+            <button className="ml-20 mb-4 border-2 bg-slate-600 px-4 py-2 rounded-2xl text-white"
+              onClick={() => {
+                window.open('/submit',
+                  "_blank"
+                );
+              }}
+            >
+              Submit Page
+            </button>
           </Col>
           <Col span={12}>
             <Item name="queryString">
