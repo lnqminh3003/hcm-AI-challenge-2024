@@ -12,7 +12,7 @@ function PageQuery() {
 
   const [pageData, setPageData] = useState<PageData>([]);
   const [startTime, setStartTime] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(4 * 6);
+  const [timeLeft, setTimeLeft] = useState(4 * 60);
 
   useEffect(() => {
     if (number && queries[number]) {
