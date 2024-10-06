@@ -74,7 +74,7 @@ const UsersUpdate = ({ videoId, frameId, timeLeft }: any) => {
       {users && Array.isArray(users) && users.length > 0 ? (
         <div>
           {users.map((user) =>
-            user.videoId != videoId || user.frameId != frameId ? (
+            user.videoId != videoId ? (
               <div key={user.id} className="text-red-600 font-bold text-xl">
                 {user.id} - Video ID: {user.videoId} - Frame ID: {user.frameId}{" "}
                 - Time Left: {user.timeLeft}
