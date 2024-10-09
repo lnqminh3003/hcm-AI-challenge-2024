@@ -24,6 +24,7 @@ import ModelOption from "ui/model-option";
 import IgnoredVideos from "ui/ignored-videos";
 import { NEXT_API_CREDENTIAL, NEXT_API_SESSION } from "@constants";
 import AsrItem from "ui/asr-item";
+import axios from "axios";
 
 function extractVideoYoutubeId(url: string) {
   const urlObj = new URL(url);
@@ -302,27 +303,19 @@ const Home: NextPage = () => {
   };
 
   const handleSubmit = async () => {
-    const session = NEXT_API_SESSION || "";
-
     try {
-      const data = await API_SERVICES.SUBMIT.Submit(
-        modalItem.video,
-        modalItem.frameId,
-        session
-      );
-      if (data.status == false) {
-        message.error(data.status);
-      } else {
-        if (data.submission == "WRONG") {
-          message.error(data.submission, 3);
-        } else message.success(data.submission, 3);
-      }
+      const res = await axios.post("https://aic24.onrender.com/add-user-to-query", {
+        "queryName": "query 1",
+        "user": {
+          "id": "bao",
+          "videoId": modalItem.video,
+          "frameId": modalItem.frameId,
+        },
+      });
 
-      await API_SERVICES.Log.log(
-        `Status: ${data.status}, Submission: ${data.submission}, Video: ${modalItem.video}, Frame: ${modalItem.frameId}`
-      );
+      console.log("Submitted data:", res.data);
     } catch (error) {
-      message.error("Error", 3);
+      console.error("Error submitting data:", error);
     }
   };
 
