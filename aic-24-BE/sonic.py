@@ -6,6 +6,8 @@ from asonic import Client
 from asonic.enums import Channel
 from tqdm import tqdm
 
+import utils
+
 asr_folder = "./data_processing/raw/transcript/"
 
 
@@ -29,29 +31,34 @@ async def setup():
             data = json.load(f)["segments"]
             
             for segment in data:
-                strings = ""
+                frame_list_str = utils.asc_list_compress(
+                    list(map(int, segment["frame_list"]))
+                )
+                
+                objData = [
+                    str(file.split(".")[0]), 
+                    str(segment["start"]), 
+                    str(segment["fps"]), 
+                    str(segment["prefix"]),
+                    frame_list_str
+                ]
+                delim = "\t"
+                assert all([delim not in s for s in objData])
+                obj = delim.join(objData)
 
-                for child in segment["frame_list"]:
-                    if(strings == ""):
-                        strings = child
-                    strings = strings + "&" + child
+                obj = utils.unicode_string_compress(obj)
+                assert len(obj) <= 128, f"obj {len(obj)}: {obj}, {objData}"
 
                 try:
                     await c.push(
                         collection="asr",
                         bucket="test",
-                        obj="{}<space>{}<space>{}<space>{}<space>{}".format(
-                            file.split(".")[0],
-                            segment["start"],
-                            segment["fps"],
-                            segment["prefix"],
-                            strings
-                        ),
-                        text= segment["text"],
+                        obj=obj,
+                        text=segment["text"],
                     )
                 except Exception as e:
-                    print("memaybeo")
-       
+                    print(e)
+                    
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()

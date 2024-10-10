@@ -173,17 +173,15 @@ async def asrquery(asrquery: ASRQuery):
     res = []
     print(results)
     for r in results:
-        print( r.decode("utf-8"))
-        vid_id, frame_start, fps, prefix, frame_list  = r.decode("utf-8").split(
-            "<space>"
-        )
+        result = utils.unicode_string_decompress(''.join([chr(x) for x in r]))
+        vid_id, frame_start, fps, prefix, frame_list  = result.split("\t")
 
         frame_start = int(float(frame_start) * 25)
         # frame_end = int(float(frame_end) * 25)
         # frame_mid = ((frame_start + frame_end) >> 1)
         # frame_mid -= frame_mid % 25
 
-        frame_list = frame_list.split("&")
+        frame_list = utils.asc_list_decompress(frame_list)
 
         res.append(
             {

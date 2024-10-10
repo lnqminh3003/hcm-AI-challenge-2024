@@ -9,6 +9,10 @@ from unidecode import unidecode
 import datetime
 import pytz
 
+import base64
+import zlib
+
+
 
 def get_key_frame(model, video, keyframe):
     for sample in model.dataset:
@@ -180,6 +184,29 @@ def print_log(text, file_path):
     except Exception as e:
         print("Write file error:", str(e))
 
+
+def asc_list_compress(l: list[int]) -> str:
+    if len(l) == 0:
+        return ""
+    c = [l[0]]
+    for i in range(1, len(l)):
+        c.append(l[i] - l[i - 1])
+    return ','.join(list(map(str, c)))
+
+def asc_list_decompress(s: str) -> list[int]:
+    if len(s) == 0:
+        return []
+    c = list(map(int, s.split(',')))
+    l = [c[0]]
+    for i in range(1, len(c)):
+        l.append(l[i - 1] + c[i])
+    return l
+
+def unicode_string_compress(s: str) -> str:
+    return base64.b64encode(zlib.compress(s.encode("utf-8"))).decode("utf-8")
+
+def unicode_string_decompress(s: str) -> str:
+    return zlib.decompress(base64.b64decode(s)).decode("utf-8")
 
 if __name__ == "__main__":
     test_string = "first sentence $10 second sentence $0"
