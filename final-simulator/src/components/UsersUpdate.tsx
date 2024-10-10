@@ -77,12 +77,10 @@ const UsersUpdate = ({ videoId, frameId, timeLeft }: any) => {
             user.videoId != videoId ? (
               <div key={user.id} className="text-red-600 font-bold text-xl">
                 {user.id} - Video ID: {user.videoId} - Frame ID: {user.frameId}{" "}
-                - Time Left: {user.timeLeft}
               </div>
             ) : (
               <div key={user.id} className="text-green-500 font-bold text-xl">
                 {user.id} - Video ID: {user.videoId} - Frame ID: {user.frameId}{" "}
-                - Time Left: {user.timeLeft}
               </div>
             )
           )}
