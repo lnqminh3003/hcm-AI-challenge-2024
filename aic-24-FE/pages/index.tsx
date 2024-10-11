@@ -22,9 +22,11 @@ import { checkLiveSearch, extractBatch, groupByVideo } from "src/functions";
 import ASRForm from "ui/asr-form";
 import ModelOption from "ui/model-option";
 import IgnoredVideos from "ui/ignored-videos";
-import { NEXT_API_CREDENTIAL, NEXT_API_SESSION } from "@constants";
 import AsrItem from "ui/asr-item";
 import axios from "axios";
+import ModalLoading from "ui/ModalLoading";
+import { set } from "lodash";
+import ModalSuccess from "ui/ModalSuccess";
 
 function extractVideoYoutubeId(url: string) {
   const urlObj = new URL(url);
@@ -70,6 +72,14 @@ const NUMPEOPLE_OPTIONS = [
   { label: "Equal", value: "equal" },
 ];
 
+const NAME_OPTIONS = [
+  { label: "Bao", value: "bao" },
+  { label: "Chau", value: "chau" },
+  { label: "Sang", value: "sang" },
+  { label: "Hoang", value: "hoang" },
+  { label: "Minh", value: "minh" },
+];
+
 const Home: NextPage = () => {
   const [form] = useForm();
   const [searchOption, setSearchOption] = useState<String>("simple");
@@ -80,6 +90,9 @@ const Home: NextPage = () => {
   const [asr, SetAsr] = useState(false);
   const [numPeople, setNumPeople] = useState("");
   const [numberPeopleOption, setNumberPeoplehOption] = useState<string>("off");
+  const [nameOption, setNameOption] = useState<String>("minh");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   function extractParts(str: string) {
     const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.jpg)$/;
@@ -275,8 +288,6 @@ const Home: NextPage = () => {
             extractParts(value.img_path.toString())?.videoId ?? "";
           const frameId: string =
             extractParts(value.img_path.toString())?.frameId ?? "";
-          console.log("Minh");
-          console.log(value.fps.toString());
 
           return {
             video: videoId,
@@ -303,19 +314,27 @@ const Home: NextPage = () => {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
+    SetConfirmSubmit(false);
     try {
-      const res = await axios.post("https://aic24.onrender.com/add-user-to-query", {
-        "queryName": "query 1",
-        "user": {
-          "id": "bao",
-          "videoId": modalItem.video,
-          "frameId": modalItem.frameId,
-        },
-      });
+      const res = await axios.post(
+        "https://aic24.onrender.com/add-user-to-query",
+        {
+          queryName: "query 10",
+          user: {
+            id: nameOption,
+            videoId: modalItem.video,
+            frameId: modalItem.frameId.split(".")[0],
+          },
+        }
+      );
 
+      setIsLoading(false);
+      setIsSuccess(true);
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);
+      setIsLoading(false);
     }
   };
 
@@ -356,16 +375,18 @@ const Home: NextPage = () => {
             <Typography.Text style={{ fontSize: "24px" }}>
               AIC 2024 - Nitzche
             </Typography.Text>
-            <button className="ml-20 mb-4 border-2 bg-slate-600 px-4 py-2 rounded-2xl text-white"
-              onClick={() => {
-                window.open('/submit',
-                  "_blank"
-                );
-              }}
-            >
-              Submit Page
-            </button>
+    
+            <Col className="mb-4">
+              <Radio.Group
+                options={NAME_OPTIONS}
+                onChange={({ target: { value } }: RadioChangeEvent) => {
+                  setNameOption(value);
+                }}
+                value={nameOption}
+              />
+            </Col>
           </Col>
+
           <Col span={12}>
             <Item name="queryString">
               <TextArea
@@ -533,7 +554,7 @@ const Home: NextPage = () => {
                     modalItem.fps
                   }&frameId=${modalItem.frameId}&prefix=${extractVideoYoutubeId(
                     modalItem.youtubeUrl?.toString() || ""
-                  )}`,
+                  )}&name=${nameOption}`,
                   "_blank"
                 );
               }}
@@ -546,8 +567,8 @@ const Home: NextPage = () => {
       <Modal
         centered
         onOk={async () => {
+          setVisible(false);
           await handleSubmit();
-          SetConfirmSubmit(false);
         }}
         okText="Confirm"
         onCancel={() => SetConfirmSubmit(false)}
@@ -555,6 +576,10 @@ const Home: NextPage = () => {
       >
         Do You Want To Submit?
       </Modal>
+      <div></div>
+
+      <ModalLoading isLoading={isLoading} />
+      <ModalSuccess isSuccess={isSuccess} setIsSuccess={setIsSuccess} />
     </>
   );
 };

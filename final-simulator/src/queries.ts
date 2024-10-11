@@ -40,12 +40,12 @@ const queries: QueriesType = {
     "8:49",
   ],
   "5": [
-    "Bản tin về giáng sinh tại một thành phố ở châu Âu.",
-    "Có đèn trang trí ở phía trên các con đường giữa các toàn nhà.",
-    "Có các đèn trang trí hình con cá, hình lập phương có một viên ngọc màu đỏ ở giữa.",
-    "Cuối cùng là hình ảnh cây thông với rất nhiều đèn được quấn xung quanh.",
-    "L05_V027",
-    "23729",
+    "Bản tin về việc mặc trang phục áo dài truyền thống ở công sở ở một địa phương miền Nam.",
+    "Mở đầu bản tin có thể thấy 2 nhóm phụ nữ, trong đó một nhóm có 2 người mặc áo màu hồng và 2 người mặc áo màu vàng đang tiến đến gần nhóm còn lại.",
+    "Sau đó là cảnh phỏng vấn một người phụ nữ mặc áo dài hoa đang ngồi trong văn phòng.",
+    "Cuối cùng là chào cờ đầu tuần ở một đơn vị nhà nước, trong đó có nhiều người phụ nữ mặc áo dài.",
+    "L12_V004",
+    "[06364, 06974]",
   ],
   "6": [
     "Cảnh quay một khu triển lãm. Có 2 cái vật dụng nhìn giống một cái lọ, ở bên tay trái gần với camera nhất.",

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ImgType } from "..";
 import { Modal, Row, Col, Image, Button, message } from "antd";
 import { rmExt } from "src/functions";
@@ -8,6 +8,9 @@ import { NEXT_API_SESSION } from "@constants";
 import fs from "fs";
 import path from "path";
 import { GetServerSideProps } from "next";
+import axios from "axios";
+import ModalLoading from "ui/ModalLoading";
+import ModalSuccess from "ui/ModalSuccess";
 
 const PREFIX = "/data/video_frames/";
 
@@ -42,7 +45,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       video: video,
       frameId: file,
       youtubeUrl: "https://www.youtube.com/watch?v=5KiMl_1m5ck&t=786s",
-      fps: ""
+      fps: "",
     }));
 
   return {
@@ -55,35 +58,35 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
 const Video = ({ images, videoId }: Props) => {
   const router = useRouter();
-  const { frameId, video, prefix, fps } = router.query;
+  const { frameId, video, prefix, fps, name } = router.query;
   const [visible, setVisible] = useState(false);
   const [modalItem, setModalItem] = useState<ImgType>(images[0]);
   const [confirmSubmit, SetConfirmSubmit] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async () => {
-    const session = NEXT_API_SESSION || "";
-
+    setIsLoading(true);
+    SetConfirmSubmit(false);
     try {
-      const data = await API_SERVICES.SUBMIT.Submit(
-        modalItem.video,
-        rmExt(modalItem.frameId),
-        session
+      const res = await axios.post(
+        "https://aic24.onrender.com/add-user-to-query",
+        {
+          queryName: "query 10",
+          user: {
+            id: name,
+            videoId: modalItem.video,
+            frameId: modalItem.frameId.split(".")[0],
+          },
+        }
       );
-      if (data.status == false) {
-        message.error(data.status);
-      } else {
-        if (data.submission == "WRONG") {
-          message.error(data.submission, 3);
-        } else message.success(data.submission, 3);
-      }
 
-      await API_SERVICES.Log.log(
-        `Status: ${data.status}, Submission: ${data.submission}, Video: ${
-          modalItem.video
-        }, Frame: ${rmExt(modalItem.frameId)}`
-      );
+      setIsLoading(false);
+      setIsSuccess(true);
+      console.log("Submitted data:", res.data);
     } catch (error) {
-      message.error("Error", 3);
+      console.error("Error submitting data:", error);
+      setIsLoading(false);
     }
   };
 
@@ -152,13 +155,14 @@ const Video = ({ images, videoId }: Props) => {
           src={modalItem.link}
           alt="aic-img"
         />
-        <h4>{modalItem.video + "/" + modalItem.frameId}</h4>
-        <h4>{parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")}</h4>
+        <div className="text-2xl font-bold mb-2">{modalItem.video + "/" + modalItem.frameId}</div>
+        {/* <h4>{parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")}</h4> */}
         <Button
           onClick={() => {
             window.open(
               `https://www.youtube.com/watch?v=${prefix}k&t=${(
-                parseInt(modalItem.frameId) / parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
+                parseInt(modalItem.frameId) /
+                parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
               ).toString()}s`
             );
           }}
@@ -169,8 +173,8 @@ const Video = ({ images, videoId }: Props) => {
       <Modal
         centered
         onOk={async () => {
+          setVisible(false)
           await handleSubmit();
-          SetConfirmSubmit(false);
         }}
         okText="Confirm"
         onCancel={() => SetConfirmSubmit(false)}
@@ -178,6 +182,8 @@ const Video = ({ images, videoId }: Props) => {
       >
         Do You Want To Submit?
       </Modal>
+      <ModalLoading isLoading={isLoading} />
+      <ModalSuccess isSuccess={isSuccess} setIsSuccess={setIsSuccess} />
     </>
   );
 };
