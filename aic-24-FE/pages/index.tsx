@@ -115,68 +115,79 @@ const Home: NextPage = () => {
         <>
           {imgSource.length > 0 ? (
             Object.keys(newImgSrc).map((e) => (
-              <Col span={24} key={e}>
-                <Typography.Text style={{ fontSize: 20, fontWeight: 700 }}>
-                  {e}
-                </Typography.Text>
+              <>
+                {!form.getFieldValue("ignoredVideos").includes(e) && (
+                  <Col span={24} key={e}>
+                    <Typography.Text style={{ fontSize: 20, fontWeight: 700 }}>
+                      {e}
+                    </Typography.Text>
 
-                <DeleteFilled
-                  style={{ fontSize: 20, margin: 8, color: "red" }}
-                  onClick={() => {
-                    const ignoredVideos = form.getFieldValue("ignoredVideos");
-                    if (ignoredVideos) {
-                      if (!ignoredVideos.includes(e)) {
-                        form.setFieldValue("ignoredVideos", [
-                          ...ignoredVideos,
-                          e,
-                        ]);
-                      }
-                    } else {
-                      form.setFieldValue("ignoredVideos", [e]);
-                    }
-                  }}
-                  rev={undefined}
-                />
-                <Row gutter={[8, 8]}>
-                  {newImgSrc[e].map((img) => (
-                    <Col key={img.frameId}>
-                      {asr ? (
-                        <AsrItem
-                          imgData={img}
-                          setVisible={setVisible}
-                          setModalItem={setModalItem}
-                        />
-                      ) : (
-                        <div className="">
-                          <p>
-                            Video ID:
-                            {extractParts(img.link ? img.link : "")?.videoId}
-                          </p>
-                          <Image
-                            style={{
-                              borderRadius: 0,
-                              height: "160px",
-                              width: "213px",
-                            }}
-                            src={img.link}
-                            alt="aic-img"
-                            onClick={() => {
-                              setModalItem(img);
-                              setVisible(true);
-                            }}
-                            preview={false}
-                          />
+                    <DeleteFilled
+                      style={{ fontSize: 20, margin: 8, color: "red" }}
+                      onClick={() => {
+                        const ignoredVideos =
+                          form.getFieldValue("ignoredVideos");
+                        if (ignoredVideos) {
+                          if (!ignoredVideos.includes(e)) {
+                            form.setFieldValue("ignoredVideos", [
+                              ...ignoredVideos,
+                              e,
+                            ]);
+                          }
+                        } else {
+                          form.setFieldValue("ignoredVideos", [e]);
+                        }
+                      }}
+                      rev={undefined}
+                    />
+                    <Row gutter={[8, 8]}>
+                      {newImgSrc[e].map((img) => (
+                        <Col key={img.frameId}>
+                          {asr ? (
+                            <AsrItem
+                              imgData={img}
+                              setVisible={setVisible}
+                              setModalItem={setModalItem}
+                            />
+                          ) : (
+                            <div className="">
+                              <p>
+                                Video ID:
+                                {
+                                  extractParts(img.link ? img.link : "")
+                                    ?.videoId
+                                }
+                              </p>
+                              <Image
+                                style={{
+                                  borderRadius: 0,
+                                  height: "160px",
+                                  width: "213px",
+                                }}
+                                src={img.link}
+                                alt="aic-img"
+                                onClick={() => {
+                                  setModalItem(img);
+                                  setVisible(true);
+                                }}
+                                preview={false}
+                              />
 
-                          <p className="">
-                            Frame ID:
-                            {extractParts(img.link ? img.link : "")?.frameId}
-                          </p>
-                        </div>
-                      )}
-                    </Col>
-                  ))}
-                </Row>
-              </Col>
+                              <p className="">
+                                Frame ID:
+                                {
+                                  extractParts(img.link ? img.link : "")
+                                    ?.frameId
+                                }
+                              </p>
+                            </div>
+                          )}
+                        </Col>
+                      ))}
+                    </Row>
+                  </Col>
+                )}
+              </>
             ))
           ) : (
             <img
@@ -375,7 +386,7 @@ const Home: NextPage = () => {
             <Typography.Text style={{ fontSize: "24px" }}>
               AIC 2024 - Nitzche
             </Typography.Text>
-    
+
             <Col className="mb-4">
               <Radio.Group
                 options={NAME_OPTIONS}
