@@ -10,6 +10,8 @@ interface User {
 
 const UsersUpdate = ({ videoId, frameId, timeLeft }: any) => {
   const [users, setUsers] = useState<User[]>([]);
+  const [start, setStart] = useState<number>(0);
+  const [end, setEnd] = useState<number>(0);
 
   const addUser = (updatedData: any) => {
     setUsers((prevUsers) => {
@@ -35,6 +37,12 @@ const UsersUpdate = ({ videoId, frameId, timeLeft }: any) => {
   };
 
   useEffect(() => {
+    if (frameId != undefined) {
+      let numbers = frameId.replace(/[\[\]\s]/g, "").split(",");
+      setStart(parseInt(numbers[0], 10));
+      setEnd(parseInt(numbers[1], 10));
+    }
+
     const socket = new WebSocket("https://aic24.onrender.com");
 
     socket.onopen = () => {
@@ -67,20 +75,26 @@ const UsersUpdate = ({ videoId, frameId, timeLeft }: any) => {
     return () => {
       socket.close();
     };
-  }, [users]);
+  }, [users, frameId]);
 
   return (
     <div className="mt-8">
+      <div>
+        {start} - {end}
+      </div>
+
       {users && Array.isArray(users) && users.length > 0 ? (
         <div>
           {users.map((user) =>
-            user.videoId != videoId ? (
-              <div key={user.id} className="text-red-600 font-bold text-xl">
-                {user.id} - Video ID: {user.videoId} - Frame ID: {user.frameId}{" "}
+            user.videoId == videoId &&
+            parseInt(user.frameId) <= end &&
+            parseInt(user.frameId) >= start ? (
+              <div key={user.id} className="text-green-500 font-bold text-xl">
+                {user.id} - Correct
               </div>
             ) : (
-              <div key={user.id} className="text-green-500 font-bold text-xl">
-                {user.id} - Video ID: {user.videoId} - Frame ID: {user.frameId}{" "}
+              <div key={user.id} className="text-red-600 font-bold text-xl">
+                {user.id} - Incorrect
               </div>
             )
           )}
