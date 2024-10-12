@@ -12,7 +12,7 @@ function PageQuery() {
 
   const [pageData, setPageData] = useState<PageData>([]);
   const [startTime, setStartTime] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(4 * 60);
+  const [timeLeft, setTimeLeft] = useState(5 * 60);
 
   useEffect(() => {
     if (number && queries[number]) {
@@ -28,7 +28,8 @@ function PageQuery() {
 
   return (
     <div className="mt-4 flex flex-col items-center">
-      <div className="text-4xl font-bold">QUERY {number}</div>
+      <div className="text-4xl font-bold mb-2">QUERY {number}</div>
+      <a href={pageData[7]} target="_blank">Video Result</a>
 
       {startTime ? (
         <CountdownTimer
@@ -45,7 +46,11 @@ function PageQuery() {
         </button>
       )}
 
-      <UsersUpdate videoId={pageData[4]} frameId={pageData[5]} timeLeft={timeLeft} />
+      <UsersUpdate
+        videoId={pageData[4]}
+        frameId={pageData[5]}
+        timeLeft={timeLeft}
+      />
     </div>
   );
 }

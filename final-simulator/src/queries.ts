@@ -8,10 +8,12 @@ const queries: QueriesType = {
   "1": [
     "Bản tin về một giải đấu thể thao ở vùng biển. Có 2 vận động viên lướt sóng xuất hiện trong khung hình toàn cảnh ban đầu",
     "Sau đó chúng ta được thấy cận cảnh phần thi đấu của từng vận động viên, theo thứ tự vận động viên mặc áo màu trắng rồi đến vận động viên mặc áo màu đỏ",
-    "Vận động viên áo đỏ 16 tuổi đến từ Nhật Bản đã giành ngôi vị quán quân.",
-    "Cảnh quay cuối cùng chúng ta được thấy 2 vận động viên cùng đứng trên bục trao giải.",
+    "",
+    "",
     "L03_V025",
     "[28059, 28801]",
+    "QA",
+    "https://www.youtube.com/watch?v=yNYe-RxgwLk&t=1852s"
   ],
   "2": [
     "Bản tin về khung cảnh trang trí giáng sinh trên một khu phố ở châu Âu. Có rất nhiều tác phẩm nghệ thuật ánh sáng dọc theo con đường.",

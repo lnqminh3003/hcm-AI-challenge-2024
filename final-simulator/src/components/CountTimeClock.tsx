@@ -28,15 +28,21 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
         }
 
         // Update the query at specific times
-        if (prevTime === 180 && current == 0) {
-          setQuery([queries[1]]);
-          current = 1;
-        } else if (prevTime === 120 && current == 1) {
-          setQuery([queries[2]]);
-          current = 2;
-        } else if (prevTime === 60 && current == 2) {
-          setQuery([queries[3]]);
-          current = 3;
+        if (prevTime === 240 && current == 0) {
+          if (queries[1].length != 0) {
+            setQuery([queries[1]]);
+            current = 1;
+          }
+        } else if (prevTime === 180 && current == 1) {
+          if (queries[2].length != 0) {
+            setQuery([queries[2]]);
+            current = 2;
+          }
+        } else if (prevTime === 120 && current == 2) {
+          if (queries[3].length != 0) {
+            setQuery([queries[3]]);
+            current = 3;
+          }
         }
 
         return prevTime - 1;

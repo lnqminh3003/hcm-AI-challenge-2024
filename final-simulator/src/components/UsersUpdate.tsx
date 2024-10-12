@@ -4,6 +4,7 @@ interface User {
   id: string;
   videoId: string;
   frameId: string;
+  QA: string;
   isTrue: boolean;
   timeLeft: number;
 }
@@ -79,10 +80,6 @@ const UsersUpdate = ({ videoId, frameId, timeLeft }: any) => {
 
   return (
     <div className="mt-8">
-      <div>
-        {start} - {end}
-      </div>
-
       {users && Array.isArray(users) && users.length > 0 ? (
         <div>
           {users.map((user) =>
@@ -90,11 +87,11 @@ const UsersUpdate = ({ videoId, frameId, timeLeft }: any) => {
             parseInt(user.frameId) <= end &&
             parseInt(user.frameId) >= start ? (
               <div key={user.id} className="text-green-500 font-bold text-xl">
-                {user.id} - Correct
+                {user.id} - Correct - {user.QA}
               </div>
             ) : (
               <div key={user.id} className="text-red-600 font-bold text-xl">
-                {user.id} - Incorrect
+                {user.id} - Incorrect - {user.QA}
               </div>
             )
           )}

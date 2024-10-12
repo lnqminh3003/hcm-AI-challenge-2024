@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema({
   id: { type: String, required: true },
   videoId: { type: String, required: true },
   frameId: { type: String, required: true },
+  QA: { type: String, required: true },
   time: { type: Date, default: Date.now }, 
 });
 

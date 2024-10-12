@@ -27,6 +27,7 @@ import axios from "axios";
 import ModalLoading from "ui/ModalLoading";
 import { set } from "lodash";
 import ModalSuccess from "ui/ModalSuccess";
+import GeminiComponent from "ui/GeminiComponent";
 
 function extractVideoYoutubeId(url: string) {
   const urlObj = new URL(url);
@@ -93,6 +94,8 @@ const Home: NextPage = () => {
   const [nameOption, setNameOption] = useState<String>("minh");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [historyQuery, setHistoryQuery] = useState<any>([]);
+  const [answer, setAnswer] = useState("");
 
   function extractParts(str: string) {
     const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.jpg)$/;
@@ -310,6 +313,7 @@ const Home: NextPage = () => {
         });
 
         setImgSource(newSource);
+        setHistoryQuery([...historyQuery, enString]);
       });
     }
   };
@@ -336,6 +340,7 @@ const Home: NextPage = () => {
             id: nameOption,
             videoId: modalItem.video,
             frameId: modalItem.frameId.split(".")[0],
+            QA: answer,
           },
         }
       );
@@ -375,6 +380,39 @@ const Home: NextPage = () => {
     }
   };
 
+  async function handleGemini() {
+    const geminiInput = form.getFieldValue("geminiInput");
+
+    try {
+      const apiKey = process.env.NEXT_PUBLIC_API_GEMINI_KEY;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+
+      const requestBody = {
+        contents: [
+          {
+            parts: [
+              {
+                text: geminiInput,
+              },
+            ],
+          },
+        ],
+      };
+
+      const response = await axios.post(url, requestBody, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const generatedText = response.data.candidates[0].content.parts[0].text;
+
+      form.setFieldValue("geminiOutput", generatedText);
+    } catch (error) {
+      console.error("Error during the API call:", error);
+    }
+  }
+
   return (
     <>
       <Head>
@@ -402,11 +440,13 @@ const Home: NextPage = () => {
             <Item name="queryString">
               <TextArea
                 onChange={() => {
+                  const { queryString } = form.getFieldsValue();
                   handleLiveSearchQuery(false);
+                  form.setFieldValue("geminiInput", "Hãy tưởng tượng tôi là search engine.... " + queryString);
                 }}
                 showCount
-                maxLength={1000}
-                style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
+                maxLength={800}
+                style={{ height: 100, marginBottom: 24, borderWidth: 3 }}
                 placeholder="Vi Text"
               />
             </Item>
@@ -419,13 +459,55 @@ const Home: NextPage = () => {
                 }}
                 showCount
                 maxLength={1000}
-                style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
+                style={{ height: 100, marginBottom: 24, borderWidth: 3 }}
                 placeholder="Eng Text"
               />
             </Item>
           </Col>
-          <Col span={12} className="-mt-4 flex flex-col">
-            <div className="-mt-4 mb-4">
+
+          <Col span={11}>
+            <Item name="geminiInput">
+              <TextArea
+                onChange={() => {
+
+                }}
+                showCount
+                maxLength={800}
+                style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
+                placeholder="Gemini Input"
+              />
+            </Item>
+          </Col>
+          <button
+            className="border-2  bg-blue-500 text-white rounded-xl mt-6 px-2 h-12"
+            onClick={handleGemini}
+          >
+            Generate
+          </button>
+          <Col span={11}>
+            <Item name="geminiOutput">
+              <TextArea
+                onChange={() => {
+              
+                }}
+                showCount
+                maxLength={800}
+                style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
+                placeholder="Gemini Output"
+              />
+            </Item>
+          </Col>
+
+          <Col span={12} className="-mt-10 flex flex-col">
+            <div className="mb-4">
+              {historyQuery.length > 0 && (
+                <div className="text-xl font-bold">History</div>
+              )}
+              {historyQuery.map((query: any) => (
+                <div>{query}</div>
+              ))}
+            </div>
+            {/* <div className="-mt-4 mb-4">
               <div className="flex flex-row items-center">
                 <p>Number of people:</p>
                 <input
@@ -447,7 +529,7 @@ const Home: NextPage = () => {
                 }}
                 value={numberPeopleOption}
               />
-            </Col>
+            </Col> */}
 
             <Col className="mb-4">
               <Radio.Group
@@ -479,10 +561,10 @@ const Home: NextPage = () => {
                   Query
                 </Button>
               </Col>
-
+              {/* 
               <Col span={12}>
                 <ModelOption />
-              </Col>
+              </Col> */}
             </Row>
           </Col>
           {searchOption == "asr" ? (
@@ -492,7 +574,7 @@ const Home: NextPage = () => {
               </Row>
             </Col>
           ) : (
-            <div style={{ height: 160 }}></div>
+            <div style={{ height: 20 }}></div>
           )}
         </Row>
         <Affix offsetTop={10}>
@@ -574,12 +656,23 @@ const Home: NextPage = () => {
             </Button>
           </Col>
         </Row>
+        <div className="mt-4">
+          <input
+            id="input"
+            type="text"
+            value={answer}
+            onChange={(event) => setAnswer(event.target.value)} // Update state on input change
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Enter QA"
+          />
+        </div>
       </Modal>
       <Modal
         centered
         onOk={async () => {
           setVisible(false);
           await handleSubmit();
+          setAnswer("");
         }}
         okText="Confirm"
         onCancel={() => SetConfirmSubmit(false)}
