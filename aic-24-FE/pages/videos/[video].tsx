@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   const files = fs.readdirSync(directoryPath);
   const imagePaths = files
-    .filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file))
+    .filter((file) => /\.(webp|jpeg|png|gif)$/i.test(file))
     .map((file) => ({
       link: `/data/video_frames/${video}/${file}`,
       video: video,
@@ -160,7 +160,7 @@ const Video = ({ images, videoId }: Props) => {
         <Button
           onClick={() => {
             window.open(
-              `https://www.youtube.com/watch?v=${prefix}k&t=${(
+              `https://www.youtube.com/watch?v=${prefix}&t=${Math.floor(
                 parseInt(modalItem.frameId) /
                 parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
               ).toString()}s`

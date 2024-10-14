@@ -98,7 +98,7 @@ const Home: NextPage = () => {
   const [answer, setAnswer] = useState("");
 
   function extractParts(str: string) {
-    const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.jpg)$/;
+    const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.webp)$/;
     const match = str.match(regex);
 
     if (match) {
@@ -275,12 +275,11 @@ const Home: NextPage = () => {
               newSource.push({
                 video: value.video_id,
                 frameId: frameId,
-                link: `/data/video_frames/${value.video_id}/${frameId}.jpg`,
+                link: `/data/video_frames/${value.video_id}/${frameId}.webp`,
                 text: value.text,
                 fps: value.fps,
-                youtubeUrl: `https://www.youtube.com/watch?v=${
-                  value.prefix
-                }k&t=${(parseInt(frameId) / parseInt(value.fps)).toString()}s`,
+                youtubeUrl: `https://www.youtube.com/watch?v=${value.prefix
+                  }k&t=${(parseInt(frameId) / parseInt(value.fps)).toString()}s`,
               });
             }
           });
@@ -488,7 +487,7 @@ const Home: NextPage = () => {
             <Item name="geminiOutput">
               <TextArea
                 onChange={() => {
-              
+
                 }}
                 showCount
                 maxLength={800}
@@ -643,8 +642,7 @@ const Home: NextPage = () => {
             <Button
               onClick={() => {
                 window.open(
-                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${
-                    modalItem.fps
+                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${modalItem.fps
                   }&frameId=${modalItem.frameId}&prefix=${extractVideoYoutubeId(
                     modalItem.youtubeUrl?.toString() || ""
                   )}&name=${nameOption}`,
