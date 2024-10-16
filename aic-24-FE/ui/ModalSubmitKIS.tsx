@@ -8,12 +8,11 @@ function ModalSubmitKIS({
   videoId,
   milisecond,
   setIsLoading,
-  isSuccess,
-  setIsSuccess,
-  name
+  name,
 }: any) {
   const [answer, setAnswer] = useState("");
   const [response, setResponse] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const [body, setBody] = useState({
     answerSets: [
@@ -62,10 +61,23 @@ function ModalSubmitKIS({
         }
       );
 
+      // const res = await axios.post(
+      //   "https://eventretrieval.one/api/v2/submit/4df14a14-4641-49a4-80be-8d61d5de58b6",
+      //   body,
+      //   {
+      //     params: {
+      //       session: "9MH-KbTyrD76R1iD5st_VyQ1BJfWcJuP",
+      //     },
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+
       setIsLoading(false);
       setIsSuccess(true);
       setResponse(res.data);
-      //   console.log("Submitted data:", res.data);
+      console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);
       setIsLoading(false);
@@ -93,10 +105,8 @@ function ModalSubmitKIS({
       <div className="z-50">
         <Modal
           centered
-          onOk={async () => {
-            await handleSubmit();
-          }}
-          okText="Loading"
+          onOk={() => setIsSuccess(false)}
+          okText="SUCCESS"
           open={isSuccess}
         >
           <div className="font-bold text-xl mb-4">SUCCESS</div>

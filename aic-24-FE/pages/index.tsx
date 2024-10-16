@@ -673,7 +673,6 @@ const Home: NextPage = () => {
           modalItem.fps ? modalItem.fps : "25"
         )}
         setIsLoading={setIsLoading}
-        setIsSuccess={setIsSuccess}
         name = {nameOption}
       />
    
