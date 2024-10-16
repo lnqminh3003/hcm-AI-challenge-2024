@@ -29,7 +29,7 @@ origins = ["http://localhost:3000"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins= origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -138,7 +138,7 @@ async def query(query: Query):
 @app.post("/query")
 async def query(query: Query):
     model = app.model[query.model]
-    result = model.predict(query.text, query.top, query.filter_people_mode, query.num_people)
+    result = model.predict(query.text, query.top)
 
     return {"data": result}
 

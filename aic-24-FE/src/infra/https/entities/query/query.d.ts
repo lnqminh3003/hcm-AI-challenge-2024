@@ -6,6 +6,7 @@ export type Query = {
   img_path: string;
   youtube_link: string; 
   fps: string;
+  highlight: string;
 };
 
 export type RQuery = {

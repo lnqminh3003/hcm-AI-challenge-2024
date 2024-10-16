@@ -28,6 +28,8 @@ import ModalLoading from "ui/ModalLoading";
 import { set } from "lodash";
 import ModalSuccess from "ui/ModalSuccess";
 import GeminiComponent from "ui/GeminiComponent";
+import ModalSubmitQA from "ui/ModalSubmitQA";
+import ModalSubmitKIS from "ui/ModalSubmitKIS";
 
 function extractVideoYoutubeId(url: string) {
   const urlObj = new URL(url);
@@ -43,6 +45,7 @@ export type ImgType = {
   text?: string;
   fps?: string;
   listFrameId?: string[];
+  highlight?: string;
 };
 
 const { TextArea } = Input;
@@ -64,13 +67,7 @@ const SEARCH_OPTIONS = [
   { label: "Simple", value: "simple" },
   { label: "Live Search", value: "live-search" },
   { label: "Asr", value: "asr" },
-];
-
-const NUMPEOPLE_OPTIONS = [
-  { label: "Off", value: "off" },
-  { label: "Less", value: "less" },
-  { label: "More", value: "more" },
-  { label: "Equal", value: "equal" },
+  { label: "Heading", value: "heading" },
 ];
 
 const NAME_OPTIONS = [
@@ -87,15 +84,16 @@ const Home: NextPage = () => {
   const [imgSource, setImgSource] = useState<ImgType[]>([]);
   const [visible, setVisible] = useState(false);
   const [modalItem, setModalItem] = useState<ImgType>(mock_item);
-  const [confirmSubmit, SetConfirmSubmit] = useState(false);
   const [asr, SetAsr] = useState(false);
   const [numPeople, setNumPeople] = useState("");
   const [numberPeopleOption, setNumberPeoplehOption] = useState<string>("off");
   const [nameOption, setNameOption] = useState<String>("minh");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitQA, setIsSubmitQA] = useState(false);
+  const [isSubmitKIS, setIsSubmitKIS] = useState(false);
   const [historyQuery, setHistoryQuery] = useState<any>([]);
-  const [answer, setAnswer] = useState("");
+  const [searchHeading, setSearchHeading] = useState("");
 
   function extractParts(str: string) {
     const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.webp)$/;
@@ -109,6 +107,10 @@ const Home: NextPage = () => {
     } else {
       return null;
     }
+  }
+
+  function getMilisecond(frameId: string, fps: string) {
+    return Math.floor((parseInt(frameId) / parseInt(fps)) * 1000);
   }
 
   const imgContent = useMemo(() => {
@@ -161,20 +163,39 @@ const Home: NextPage = () => {
                                     ?.videoId
                                 }
                               </p>
-                              <Image
-                                style={{
-                                  borderRadius: 0,
-                                  height: "160px",
-                                  width: "213px",
-                                }}
-                                src={img.link}
-                                alt="aic-img"
-                                onClick={() => {
-                                  setModalItem(img);
-                                  setVisible(true);
-                                }}
-                                preview={false}
-                              />
+                              {img.highlight == "true" ? (
+                                <Image
+                                  style={{
+                                    borderRadius: 0,
+                                    height: "160px",
+                                    width: "213px",
+                                    borderColor: "red",
+                                    borderWidth: 5,
+                                  }}
+                                  src={img.link}
+                                  alt="aic-img"
+                                  onClick={() => {
+                                    setModalItem(img);
+                                    setVisible(true);
+                                  }}
+                                  preview={false}
+                                />
+                              ) : (
+                                <Image
+                                  style={{
+                                    borderRadius: 0,
+                                    height: "160px",
+                                    width: "213px",
+                                  }}
+                                  src={img.link}
+                                  alt="aic-img"
+                                  onClick={() => {
+                                    setModalItem(img);
+                                    setVisible(true);
+                                  }}
+                                  preview={false}
+                                />
+                              )}
 
                               <p className="">
                                 Frame ID:
@@ -278,8 +299,9 @@ const Home: NextPage = () => {
                 link: `/data/video_frames/${value.video_id}/${frameId}.webp`,
                 text: value.text,
                 fps: value.fps,
-                youtubeUrl: `https://www.youtube.com/watch?v=${value.prefix
-                  }k&t=${(parseInt(frameId) / parseInt(value.fps)).toString()}s`,
+                youtubeUrl: `https://www.youtube.com/watch?v=${
+                  value.prefix
+                }k&t=${(parseInt(frameId) / parseInt(value.fps)).toString()}s`,
               });
             }
           });
@@ -308,6 +330,7 @@ const Home: NextPage = () => {
             link: value.img_path.toString(),
             youtubeUrl: value.youtube_link.toString(),
             fps: value.fps.toString(),
+            highlight: value.highlight.toString(),
           };
         });
 
@@ -325,32 +348,6 @@ const Home: NextPage = () => {
 
     form.setFieldValue("ignoredVideos", []);
     setImgSource(newFrames);
-  };
-
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    SetConfirmSubmit(false);
-    try {
-      const res = await axios.post(
-        "https://aic24.onrender.com/add-user-to-query",
-        {
-          queryName: "query 10",
-          user: {
-            id: nameOption,
-            videoId: modalItem.video,
-            frameId: modalItem.frameId.split(".")[0],
-            QA: answer,
-          },
-        }
-      );
-
-      setIsLoading(false);
-      setIsSuccess(true);
-      console.log("Submitted data:", res.data);
-    } catch (error) {
-      console.error("Error submitting data:", error);
-      setIsLoading(false);
-    }
   };
 
   const handleTranslate = async () => {
@@ -441,7 +438,10 @@ const Home: NextPage = () => {
                 onChange={() => {
                   const { queryString } = form.getFieldsValue();
                   handleLiveSearchQuery(false);
-                  form.setFieldValue("geminiInput", "Hãy tưởng tượng tôi là search engine.... " + queryString);
+                  form.setFieldValue(
+                    "geminiInput",
+                    "Hãy tưởng tượng tôi là search engine.... " + queryString
+                  );
                 }}
                 showCount
                 maxLength={800}
@@ -467,9 +467,7 @@ const Home: NextPage = () => {
           <Col span={11}>
             <Item name="geminiInput">
               <TextArea
-                onChange={() => {
-
-                }}
+                onChange={() => {}}
                 showCount
                 maxLength={800}
                 style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
@@ -486,9 +484,7 @@ const Home: NextPage = () => {
           <Col span={11}>
             <Item name="geminiOutput">
               <TextArea
-                onChange={() => {
-
-                }}
+                onChange={() => {}}
                 showCount
                 maxLength={800}
                 style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
@@ -506,29 +502,6 @@ const Home: NextPage = () => {
                 <div>{query}</div>
               ))}
             </div>
-            {/* <div className="-mt-4 mb-4">
-              <div className="flex flex-row items-center">
-                <p>Number of people:</p>
-                <input
-                  type="number"
-                  id="numPeople"
-                  value={numPeople}
-                  onChange={(e) => setNumPeople(e.target.value)}
-                  placeholder="Enter number of people"
-                  className="border-2 ml-4 border-gray-300 rounded px-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-
-            <Col className="mb-8">
-              <Radio.Group
-                options={NUMPEOPLE_OPTIONS}
-                onChange={({ target: { value } }: RadioChangeEvent) => {
-                  setNumberPeoplehOption(value);
-                }}
-                value={numberPeopleOption}
-              />
-            </Col> */}
 
             <Col className="mb-4">
               <Radio.Group
@@ -566,15 +539,28 @@ const Home: NextPage = () => {
               </Col> */}
             </Row>
           </Col>
-          {searchOption == "asr" ? (
+          {searchOption == "asr" && (
             <Col span={12}>
               <Row gutter={[16, 16]}>
                 <ASRForm form={form} />
               </Row>
             </Col>
-          ) : (
-            <div style={{ height: 20 }}></div>
           )}
+          {searchOption == "heading" && (
+            <Col span={12}>
+              <div className="mt-4">
+                <input
+                  id="input"
+                  type="text"
+                  value={searchHeading}
+                  onChange={(event) => setSearchHeading(event.target.value)}
+                  className="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="Enter heading search"
+                />
+              </div>
+            </Col>
+          )}
+          <div style={{ height: 20 }}></div>
         </Row>
         <Affix offsetTop={10}>
           <Button
@@ -594,9 +580,9 @@ const Home: NextPage = () => {
         transitionName=""
         centered
         onOk={() => {
-          SetConfirmSubmit(true);
+          setIsSubmitKIS(true);
         }}
-        okText="Submit"
+        okText="Submit KIS"
         onCancel={() => setVisible(false)}
         width="600px"
         open={visible}
@@ -607,7 +593,7 @@ const Home: NextPage = () => {
           alt="aic-img"
         />
         <p className="text-2xl font-bold">
-          {modalItem.video + "/" + modalItem.frameId}
+          {modalItem.video + "-" + modalItem.frameId}
         </p>
         <Row gutter={[8, 8]} className="mt-4">
           <Col>
@@ -642,7 +628,8 @@ const Home: NextPage = () => {
             <Button
               onClick={() => {
                 window.open(
-                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${modalItem.fps
+                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${
+                    modalItem.fps
                   }&frameId=${modalItem.frameId}&prefix=${extractVideoYoutubeId(
                     modalItem.youtubeUrl?.toString() || ""
                   )}&name=${nameOption}`,
@@ -654,34 +641,43 @@ const Home: NextPage = () => {
             </Button>
           </Col>
         </Row>
-        <div className="mt-4">
-          <input
-            id="input"
-            type="text"
-            value={answer}
-            onChange={(event) => setAnswer(event.target.value)} // Update state on input change
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter QA"
-          />
-        </div>
-      </Modal>
-      <Modal
-        centered
-        onOk={async () => {
-          setVisible(false);
-          await handleSubmit();
-          setAnswer("");
-        }}
-        okText="Confirm"
-        onCancel={() => SetConfirmSubmit(false)}
-        open={confirmSubmit}
-      >
-        Do You Want To Submit?
-      </Modal>
-      <div></div>
 
-      <ModalLoading isLoading={isLoading} />
-      <ModalSuccess isSuccess={isSuccess} setIsSuccess={setIsSuccess} />
+        <Button
+          className="bg-blue-600 text-white mt-4"
+          onClick={() => {
+            setIsSubmitQA(true);
+          }}
+        >
+          Submit QA
+        </Button>
+      </Modal>
+
+      <ModalLoading isLoading={isLoading} setIsLoading={setIsLoading}/>
+      {/* <ModalSuccess isSuccess={true} setIsSuccess={setIsSuccess} /> */}
+
+      <ModalSubmitQA
+        visible={isSubmitQA}
+        setVisible={setIsSubmitQA}
+        videoId={modalItem.video}
+        milisecond={getMilisecond(
+          modalItem.frameId.split(".")[0],
+          modalItem.fps ? modalItem.fps : "25"
+        )}
+      />
+      <ModalSubmitKIS
+        visible={isSubmitKIS}
+        setVisible={setIsSubmitKIS}
+        videoId={modalItem.video}
+        milisecond={getMilisecond(
+          modalItem.frameId.split(".")[0],
+          modalItem.fps ? modalItem.fps : "25"
+        )}
+        setIsLoading={setIsLoading}
+        setIsSuccess={setIsSuccess}
+        name = {nameOption}
+      />
+   
+     
     </>
   );
 };

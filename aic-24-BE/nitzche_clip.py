@@ -27,20 +27,6 @@ class NitzcheCLIP:
             self.youtube_link[video_id] = data['watch_url']
             self.fps[video_id] = data['fps']
         
-        self.num_people = {}
-        yolo_dir = './data/yolo'
-        for video_name in tqdm(sorted(os.listdir(yolo_dir))):
-            video_dir = os.path.join(yolo_dir, video_name)
-            for filename in sorted(os.listdir(video_dir)):
-                filepath = os.path.join(video_dir, filename)
-                img_path = os.path.join('./data/video_frames', video_name, filename.replace('.txt', '.jpg'))
-                with open(filepath, 'r') as file:
-                    cnt = sum(1 for line in file if line.split()[0] == '0')
-                self.num_people[img_path] = cnt
-        for path in self.file_path_list:
-            if path not in self.num_people:
-                self.num_people[path] = 0
-                
         self.image_feature = np.concatenate(self.image_feature, axis=0)
         self.model, self.processor = self._load_model()
 
@@ -60,42 +46,30 @@ class NitzcheCLIP:
 
         return features_text
 
-    def filter_people(self, path_list, filter_people_mode, num_people):
-        """
-        mode: 'less' or 'more' or 'equal'
-        k: number of people
-        """
-        if filter_people_mode == 'less':
-            return [path for path in path_list if self.num_people[path] < num_people]
-        elif filter_people_mode == 'more':
-            return [path for path in path_list if self.num_people[path] > num_people]
-        elif filter_people_mode == 'equal':
-            return [path for path in path_list if self.num_people[path] == num_people]
-
-    def predict(self, text_query, top=500, filter_people_mode='off', num_people=0):
-        print(num_people)
-        print(filter_people_mode)
+    def predict(self, text_query, top=500):
         features_text = self.featurize_text(text_query)    
         results = np.squeeze(np.matmul(self.image_feature, features_text.T))
         
         results = np.argsort(results)[::-1].tolist()
         sorted_path_list = [self.file_path_list[index] for index in results[:top]]
-        if filter_people_mode != 'off':
-            sorted_path_list = self.filter_people(sorted_path_list, filter_people_mode=filter_people_mode, num_people=num_people)
         
         results_dict = {}
         for path_list in sorted_path_list:
             vid, timeframe = path_list.split('/')[-2:]
             
-            results_dict.setdefault(vid, [])
-            results_dict[vid].append(timeframe)
-            results_dict[vid] = sorted(results_dict[vid], key=lambda x: int(x[:-4]))
+            if vid not in results_dict:
+                results_dict.setdefault(vid, [])
+                results_dict[vid].append((timeframe, True))
+            else:
+                results_dict[vid].append((timeframe, False))
+            results_dict[vid] = sorted(results_dict[vid], key=lambda x: int(x[0][:-4]))
             
         return [
             {
-                'img_path': os.path.join('./data/video_frames', vid, timeframe.replace('.jpg', '.webp')),
-                'youtube_link': f"{self.youtube_link[vid]}&t={int(int(timeframe.split('.')[0])/self.fps[vid])}s",
-                'fps': self.fps[vid]
+                'img_path': os.path.join('./data/video_frames', vid, timeframe[0].replace("jpg","webp")),
+                'youtube_link': f"{self.youtube_link[vid]}&t={int(int(timeframe[0].split('.')[0])/self.fps[vid])}s",
+                'fps': self.fps[vid],
+                'highlight': timeframe[1]
             } 
             for vid, timeframe_list in results_dict.items() for timeframe in timeframe_list
         ]
@@ -113,5 +87,5 @@ if __name__ == '__main__':
     
     # Test function matching    
     nitzche_ins = NitzcheCLIP.load('./data/clip_vit_h14_nitzche.pkl')
-    image_paths = nitzche_ins.predict(text_query="A shot from a camera on a car filming the journey. In the shot there is a yellow sign \"COM BINH DAN\" with red letters. Next the camera switches to another section of the road. In the next shot there is a person wearing a black shirt with a pink suitcase standing on the right hand side.", filter_people_mode='equal', num_people=1)
+    image_paths = nitzche_ins.predict(text_query="A shot from a camera on a car filming the journey. In the shot there is a yellow sign \"COM BINH DAN\" with red letters. Next the camera switches to another section of the road. In the next shot there is a person wearing a black shirt with a pink suitcase standing on the right hand side.")
     breakpoint()

@@ -9,9 +9,9 @@ const QueryService = {
       .post<RQuery>(APIS.query.QUERY, {
         text: text || "a man",
         top: top || 400,
-        model: model || "b16",
-        filter_people_mode: filter_people_mode || "off",
-        num_people: num_people || 2,
+        // model: model || "b16",
+        // filter_people_mode: filter_people_mode || "off",
+        // num_people: num_people || 2,
       })
       .then((res) => res.data),
 

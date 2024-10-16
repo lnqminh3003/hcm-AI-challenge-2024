@@ -83,9 +83,11 @@ const UsersUpdate = ({ videoId, frameId, timeLeft }: any) => {
       {users && Array.isArray(users) && users.length > 0 ? (
         <div>
           {users.map((user) =>
-            user.videoId == videoId &&
-            parseInt(user.frameId) <= end &&
-            parseInt(user.frameId) >= start ? (
+            user.videoId == videoId 
+            // &&
+            // parseInt(user.frameId) <= end &&
+            // parseInt(user.frameId) >= start
+             ? (
               <div key={user.id} className="text-green-500 font-bold text-xl">
                 {user.id} - Correct - {user.QA}
               </div>
