@@ -51,14 +51,15 @@ function ModalSubmitKIS({
       const res = await axios.post(
         "https://aic24.onrender.com/add-user-to-query",
         {
-          queryName: "query 10",
-          user: {
-            id: name,
-            videoId: videoId,
-            frameId: milisecond,
-            QA: answer,
-          },
+          "queryName": "query 2",
+          "user":  {
+              "id": name,
+              "videoId": videoId,
+              "frameId": milisecond.toString(),
+              "QA" : "A"
+            }
         }
+        
       );
 
       // const res = await axios.post(
