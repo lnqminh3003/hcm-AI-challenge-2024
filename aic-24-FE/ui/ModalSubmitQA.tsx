@@ -29,12 +29,9 @@ function ModalSubmitQA({
   const handleSubmit = async () => {
     try {
       const res = await axios.post(
-        "https://eventretrieval.one/api/v2/submit/3b1c6888-f0c7-412a-b21f-813d07b2e914",
+        "https://eventretrieval.one/api/v2/submit/3b1c6888-f0c7-412a-b21f-813d07b2e914?session=9MH-KbTyrD76R1iD5st_VyQ1BJfWcJuP",
         body,
         {
-          params: {
-            session: "5bc243e3-c59e-4793-bbb1-5714f770935e",
-          },
           headers: {
             "Content-Type": "application/json",
           },
