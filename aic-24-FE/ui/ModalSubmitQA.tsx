@@ -45,6 +45,10 @@ function ModalSubmitQA({
       if (res.data.submission == "WRONG") {
         setIsTrue(false);
       }
+      else{
+        setIsTrue(true);
+      }
+      
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);

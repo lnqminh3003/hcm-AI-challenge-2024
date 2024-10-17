@@ -76,6 +76,9 @@ function ModalSubmitKIS({
       if (res.data.submission == "WRONG") {
         setIsTrue(false);
       }
+      else{
+        setIsTrue(true);
+      }
 
       setVisible(false);
       setVisibleModal(false);
