@@ -305,9 +305,8 @@ const Home: NextPage = () => {
                 link: `/data/video_frames/${value.video_id}/${frameId}.webp`,
                 text: value.text,
                 fps: value.fps,
-                youtubeUrl: `https://www.youtube.com/watch?v=${
-                  value.prefix
-                }k&t=${(parseInt(frameId) / parseInt(value.fps)).toString()}s`,
+                youtubeUrl: `https://www.youtube.com/watch?v=${value.prefix
+                  }k&t=${(parseInt(frameId) / parseInt(value.fps)).toString()}s`,
               });
             }
           });
@@ -473,7 +472,7 @@ const Home: NextPage = () => {
           <Col span={11}>
             <Item name="geminiInput">
               <TextArea
-                onChange={() => {}}
+                onChange={() => { }}
                 showCount
                 maxLength={800}
                 style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
@@ -490,7 +489,7 @@ const Home: NextPage = () => {
           <Col span={11}>
             <Item name="geminiOutput">
               <TextArea
-                onChange={() => {}}
+                onChange={() => { }}
                 showCount
                 maxLength={800}
                 style={{ height: 120, marginBottom: 24, borderWidth: 3 }}
@@ -636,8 +635,7 @@ const Home: NextPage = () => {
             <Button
               onClick={() => {
                 window.open(
-                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${
-                    modalItem.fps
+                  `/videos/${modalItem.video}?video=${modalItem.video}&fps=${modalItem.fps
                   }&frameId=${modalItem.frameId}&prefix=${extractVideoYoutubeId(
                     modalItem.youtubeUrl?.toString() || ""
                   )}&name=${nameOption}`,
@@ -663,11 +661,16 @@ const Home: NextPage = () => {
       {isSuccess && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full flex flex-col items-center">
-            <Image src={successImage} alt="Success" width={200} height={200} />
             {isTrue ? (
-              <p className="mb-6 mt-6 text-xl">TRUE</p>
+              <>
+                <Image src={successImage} alt="Success" width={200} height={200} />
+                <p className="mb-6 mt-6 text-xl">TRUE</p>
+              </>
             ) : (
-              <p className="mb-6 mt-6 text-xl">WRONG</p>
+              <>
+                <Image src={failImage} alt="Fail" width={200} height={200} />
+                <p className="mb-6 mt-6 text-xl">WRONG</p>
+              </>
             )}
 
             <button

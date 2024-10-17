@@ -93,11 +93,16 @@ const Video = ({ images, videoId }: Props) => {
       {isSuccess && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full flex flex-col items-center">
-            <Image src={successImage} alt="Success" width={200} height={200} />
             {isTrue ? (
-              <p className="mb-6 mt-6 text-xl">TRUE</p>
+              <>
+                <Image src={successImage} alt="Success" width={200} height={200} />
+                <p className="mb-6 mt-6 text-xl">TRUE</p>
+              </>
             ) : (
-              <p className="mb-6 mt-6 text-xl">WRONG</p>
+              <>
+                <Image src={failImage} alt="Fail" width={200} height={200} />
+                <p className="mb-6 mt-6 text-xl">WRONG</p>
+              </>
             )}
 
             <button
@@ -208,7 +213,7 @@ const Video = ({ images, videoId }: Props) => {
             window.open(
               `https://www.youtube.com/watch?v=${prefix}&t=${Math.floor(
                 parseInt(modalItem.frameId) /
-                  parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
+                parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
               ).toString()}s`
             );
           }}
