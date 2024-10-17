@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ImgType } from "..";
-import { Modal, Row, Col, Image, Button, message } from "antd";
-import { rmExt } from "src/functions";
-import { API_SERVICES } from "src/infra/https";
-import { NEXT_API_SESSION } from "@constants";
+import { Modal, Row, Col, Image as AntdImage, Button, message } from "antd";
+import Image from "next/image";
 import fs from "fs";
 import path from "path";
 import { GetServerSideProps } from "next";
-import axios from "axios";
-import ModalLoading from "ui/ModalLoading";
-import ModalSuccess from "ui/ModalSuccess";
+
+import ModalSubmitQA from "ui/ModalSubmitQA";
+import ModalSubmitKIS from "ui/ModalSubmitKIS";
+
+import successImage from "../../public/submit.png";
+import failImage from "../../public/fail.png";
 
 const PREFIX = "/data/video_frames/";
 
@@ -61,34 +62,15 @@ const Video = ({ images, videoId }: Props) => {
   const { frameId, video, prefix, fps, name } = router.query;
   const [visible, setVisible] = useState(false);
   const [modalItem, setModalItem] = useState<ImgType>(images[0]);
-  const [confirmSubmit, SetConfirmSubmit] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isTrue, setIsTrue] = useState(false);
+  const [isFail, setIsFail] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitQA, setIsSubmitQA] = useState(false);
+  const [isSubmitKIS, setIsSubmitKIS] = useState(false);
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    SetConfirmSubmit(false);
-    try {
-      const res = await axios.post(
-        "https://aic24.onrender.com/add-user-to-query",
-        {
-          queryName: "query 10",
-          user: {
-            id: name,
-            videoId: modalItem.video,
-            frameId: modalItem.frameId.split(".")[0],
-          },
-        }
-      );
-
-      setIsLoading(false);
-      setIsSuccess(true);
-      console.log("Submitted data:", res.data);
-    } catch (error) {
-      console.error("Error submitting data:", error);
-      setIsLoading(false);
-    }
-  };
+  function getMilisecond(frameId: string, fps: string) {
+    return Math.floor((parseInt(frameId) / parseInt(fps)) * 1000);
+  }
 
   useEffect(() => {
     console.log(`${PREFIX}${video}/${frameId}`);
@@ -107,7 +89,69 @@ const Video = ({ images, videoId }: Props) => {
   }, [video, frameId, router]);
 
   return (
-    <>
+    <div>
+      {isSuccess && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full flex flex-col items-center">
+            <Image src={successImage} alt="Success" width={200} height={200} />
+            {isTrue ? (
+              <p className="mb-6 mt-6 text-xl">TRUE</p>
+            ) : (
+              <p className="mb-6 mt-6 text-xl">WRONG</p>
+            )}
+
+            <button
+              className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setIsSuccess(false)}
+            >
+              Close Modal
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isFail && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full flex flex-col items-center">
+            <Image src={failImage} alt="Success" width={200} height={200} />
+            <button
+              className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setIsFail(false)}
+            >
+              Close Modal
+            </button>
+          </div>
+        </div>
+      )}
+
+      <ModalSubmitQA
+        visible={isSubmitQA}
+        setVisible={setIsSubmitQA}
+        setVisibleModal={setVisible}
+        videoId={modalItem.video}
+        milisecond={getMilisecond(
+          modalItem.frameId.split(".")[0],
+          modalItem.fps ? modalItem.fps : "25"
+        )}
+        setIsSuccess={setIsSuccess}
+        setIsFail={setIsFail}
+        setIsTrue={setIsTrue}
+      />
+      <ModalSubmitKIS
+        visible={isSubmitKIS}
+        setVisible={setIsSubmitKIS}
+        setVisibleModal={setVisible}
+        videoId={modalItem.video}
+        milisecond={getMilisecond(
+          modalItem.frameId.split(".")[0],
+          modalItem.fps ? modalItem.fps : "25"
+        )}
+        name={"1"}
+        setIsSuccess={setIsSuccess}
+        setIsTrue={setIsTrue}
+        setIsFail={setIsFail}
+      />
+
       <div
         style={{
           display: "flex",
@@ -143,48 +187,45 @@ const Video = ({ images, videoId }: Props) => {
         transitionName=""
         centered
         onOk={() => {
-          SetConfirmSubmit(true);
+          setIsSubmitKIS(true);
         }}
         okText="Submit"
         onCancel={() => setVisible(false)}
         width="600px"
         open={visible}
       >
-        <Image
+        <AntdImage
           id={`${PREFIX}${modalItem.video}/${modalItem.frameId}`}
           src={modalItem.link}
           alt="aic-img"
         />
-        <div className="text-2xl font-bold mb-2">{modalItem.video + "/" + modalItem.frameId}</div>
+        <div className="text-2xl font-bold mb-2">
+          {modalItem.video + "/" + modalItem.frameId}
+        </div>
         {/* <h4>{parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")}</h4> */}
         <Button
           onClick={() => {
             window.open(
               `https://www.youtube.com/watch?v=${prefix}&t=${Math.floor(
                 parseInt(modalItem.frameId) /
-                parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
+                  parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
               ).toString()}s`
             );
           }}
         >
           View Youtube Link
         </Button>
+
+        <Button
+          className="bg-blue-600 text-white mt-4 ml-4"
+          onClick={() => {
+            setIsSubmitQA(true);
+          }}
+        >
+          Submit QA
+        </Button>
       </Modal>
-      <Modal
-        centered
-        onOk={async () => {
-          setVisible(false)
-          await handleSubmit();
-        }}
-        okText="Confirm"
-        onCancel={() => SetConfirmSubmit(false)}
-        open={confirmSubmit}
-      >
-        Do You Want To Submit?
-      </Modal>
-      <ModalLoading isLoading={isLoading} />
-      <ModalSuccess isSuccess={isSuccess} setIsSuccess={setIsSuccess} />
-    </>
+    </div>
   );
 };
 

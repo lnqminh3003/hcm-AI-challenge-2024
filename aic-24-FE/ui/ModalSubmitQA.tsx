@@ -14,6 +14,9 @@ function ModalSubmitQA({
 }: any) {
   const [answer, setAnswer] = useState("");
 
+  const evaId = process.env.NEXT_PUBLIC_EVALUATIONID;
+  const sessionId = process.env.NEXT_PUBLIC_SESSIONID;
+
   const [body, setBody] = useState({
     answerSets: [{ answers: [{ text: "" }] }],
   });
@@ -29,7 +32,7 @@ function ModalSubmitQA({
   const handleSubmit = async () => {
     try {
       const res = await axios.post(
-        "https://eventretrieval.one/api/v2/submit/3b1c6888-f0c7-412a-b21f-813d07b2e914?session=9MH-KbTyrD76R1iD5st_VyQ1BJfWcJuP",
+        `https://eventretrieval.one/api/v2/submit/${evaId}?session=${sessionId}`,
         body,
         {
           headers: {

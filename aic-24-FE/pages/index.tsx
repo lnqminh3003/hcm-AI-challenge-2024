@@ -5,7 +5,7 @@ import {
   Button,
   Divider,
   Typography,
-  Image,
+  Image as AntdImage,
   Form,
   Modal,
   Radio,
@@ -13,6 +13,7 @@ import {
   message,
   Affix,
 } from "antd";
+import Image from "next/image";
 import { SearchOutlined, DeleteFilled } from "@ant-design/icons";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -31,6 +32,9 @@ import GeminiComponent from "ui/GeminiComponent";
 import ModalSubmitQA from "ui/ModalSubmitQA";
 import ModalSubmitKIS from "ui/ModalSubmitKIS";
 import ModalFail from "ui/ModalFail";
+
+import successImage from "../public/submit.png";
+import failImage from "../public/fail.png"
 
 function extractVideoYoutubeId(url: string) {
   const urlObj = new URL(url);
@@ -166,7 +170,7 @@ const Home: NextPage = () => {
                                 }
                               </p>
                               {img.highlight == "true" ? (
-                                <Image
+                                <AntdImage
                                   style={{
                                     borderRadius: 0,
                                     height: "160px",
@@ -183,7 +187,7 @@ const Home: NextPage = () => {
                                   preview={false}
                                 />
                               ) : (
-                                <Image
+                                <AntdImage
                                   style={{
                                     borderRadius: 0,
                                     height: "160px",
@@ -412,7 +416,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <>
+    <div className="">
       <Head>
         <title>AIC 2024</title>
       </Head>
@@ -591,7 +595,7 @@ const Home: NextPage = () => {
         width="600px"
         open={visible}
       >
-        <Image
+        <AntdImage
           id={`${PREFIX}${modalItem.frameId}`}
           src={modalItem.link}
           alt="aic-img"
@@ -668,11 +672,40 @@ const Home: NextPage = () => {
         </Button>
       </Modal>
 
-      <ModalSuccess
-        isSuccess={isSuccess}
-        setIsSuccess={setIsSuccess}
-        isTrue={isTrue}
-      />
+      {isSuccess && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full flex flex-col items-center">
+            <Image src={successImage} alt="Success" width={200} height={200} />
+            {isTrue ? (
+              <p className="mb-6 mt-6 text-xl">TRUE</p>
+            ) : (
+              <p className="mb-6 mt-6 text-xl">WRONG</p>
+            )}
+
+            <button
+              className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setIsSuccess(false)}
+            >
+              Close Modal
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isFail && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full flex flex-col items-center">
+            <Image src={failImage} alt="Success" width={200} height={200} />
+            <button
+              className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setIsFail(false)}
+            >
+              Close Modal
+            </button>
+          </div>
+        </div>
+      )}
+
       <ModalFail isFail={isFail} setIsFail={setIsFail} />
 
       <ModalSubmitQA
@@ -702,7 +735,7 @@ const Home: NextPage = () => {
         setIsTrue={setIsTrue}
         setIsFail={setIsFail}
       />
-    </>
+    </div>
   );
 };
 
