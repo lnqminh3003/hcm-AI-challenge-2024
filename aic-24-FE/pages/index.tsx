@@ -578,7 +578,10 @@ const Home: NextPage = () => {
 
       <div className="font-bold text-2xl text-center w-full"> Images </div>
       {imgContent}
+
+
       <Modal
+        className="z-1"
         transitionName=""
         centered
         onOk={() => {
@@ -654,21 +657,29 @@ const Home: NextPage = () => {
         </Button>
       </Modal>
 
+      <ModalSuccess
+        isSuccess={isSuccess}
+        setIsSuccess={setIsSuccess}
+        isTrue={isTrue}
+      />
+      <ModalFail isFail={isFail} setIsFail={setIsFail} />
+
       <ModalSubmitQA
         visible={isSubmitQA}
         setVisible={setIsSubmitQA}
+        setVisibleModal={setVisible}
         videoId={modalItem.video}
         milisecond={getMilisecond(
           modalItem.frameId.split(".")[0],
           modalItem.fps ? modalItem.fps : "25"
         )}
         setIsSuccess={setIsSuccess}
-        setIsTrue={setIsTrue}
         setIsFail={setIsFail}
       />
       <ModalSubmitKIS
         visible={isSubmitKIS}
         setVisible={setIsSubmitKIS}
+        setVisibleModal={setVisible}
         videoId={modalItem.video}
         milisecond={getMilisecond(
           modalItem.frameId.split(".")[0],
@@ -679,12 +690,6 @@ const Home: NextPage = () => {
         setIsTrue={setIsTrue}
         setIsFail={setIsFail}
       />
-      <ModalSuccess
-        isSuccess={isSuccess}
-        setIsSuccess={setIsSuccess}
-        isTrue={isTrue}
-      />
-      <ModalFail isFail={isFail} setIsFail={setIsFail} />
     </>
   );
 };

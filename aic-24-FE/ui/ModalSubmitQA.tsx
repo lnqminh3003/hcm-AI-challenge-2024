@@ -8,8 +8,8 @@ function ModalSubmitQA({
   videoId,
   milisecond,
   setIsSuccess,
-  setIsTrue,
   setIsFail,
+  setVisibleModal,
 }: any) {
   const [answer, setAnswer] = useState("");
 
@@ -42,6 +42,7 @@ function ModalSubmitQA({
 
       setIsSuccess(true);
       setVisible(false);
+      setVisibleModal(false);
       console.log(res.data);
 
       console.log("Submitted data:", res.data);
@@ -49,6 +50,7 @@ function ModalSubmitQA({
       console.error("Error submitting data:", error);
       setIsFail(true);
       setVisible(false);
+      setVisibleModal(false);
     }
   };
 

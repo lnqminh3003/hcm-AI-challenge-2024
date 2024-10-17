@@ -11,7 +11,8 @@ function ModalSubmitKIS({
   name,
   setIsSuccess,
   setIsTrue,
-  setIsFail
+  setIsFail,
+  setVisibleModal
 }: any) {
   const [answer, setAnswer] = useState("");
 
@@ -78,11 +79,13 @@ function ModalSubmitKIS({
       console.log(res.data)
       setIsTrue(true);
       setVisible(false);
+      setVisibleModal(false)
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);
       setIsFail(true);
       setVisible(false);
+      setVisibleModal(false)
     }
   };
 
