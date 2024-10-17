@@ -34,7 +34,7 @@ import ModalSubmitKIS from "ui/ModalSubmitKIS";
 import ModalFail from "ui/ModalFail";
 
 import successImage from "../public/submit.png";
-import failImage from "../public/fail.png"
+import failImage from "../public/fail.png";
 
 function extractVideoYoutubeId(url: string) {
   const urlObj = new URL(url);
@@ -650,18 +650,6 @@ const Home: NextPage = () => {
           </Col>
         </Row>
 
-        <button
-          onClick={() => {
-            window.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            });
-          }}
-          className="fixed bottom-5 right-5 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition"
-        >
-          Scroll to Top
-        </button>
-
         <Button
           className="bg-blue-600 text-white mt-4"
           onClick={() => {
@@ -705,6 +693,18 @@ const Home: NextPage = () => {
           </div>
         </div>
       )}
+
+      <button
+        onClick={() => {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }}
+        className="fixed bottom-5 right-5 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition"
+      >
+        Scroll to Top
+      </button>
 
       <ModalFail isFail={isFail} setIsFail={setIsFail} />
 
