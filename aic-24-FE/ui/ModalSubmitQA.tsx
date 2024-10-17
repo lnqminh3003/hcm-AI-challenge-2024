@@ -10,6 +10,7 @@ function ModalSubmitQA({
   setIsSuccess,
   setIsFail,
   setVisibleModal,
+  setIsTrue
 }: any) {
   const [answer, setAnswer] = useState("");
 
@@ -43,8 +44,10 @@ function ModalSubmitQA({
       setIsSuccess(true);
       setVisible(false);
       setVisibleModal(false);
-      console.log(res.data);
 
+      if (res.data.submission == "WRONG") {
+        setIsTrue(false);
+      }
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);

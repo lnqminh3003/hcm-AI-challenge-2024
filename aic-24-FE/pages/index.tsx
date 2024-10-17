@@ -579,7 +579,6 @@ const Home: NextPage = () => {
       <div className="font-bold text-2xl text-center w-full"> Images </div>
       {imgContent}
 
-
       <Modal
         className="z-1"
         transitionName=""
@@ -675,6 +674,7 @@ const Home: NextPage = () => {
         )}
         setIsSuccess={setIsSuccess}
         setIsFail={setIsFail}
+        setIsTrue={setIsTrue}
       />
       <ModalSubmitKIS
         visible={isSubmitKIS}

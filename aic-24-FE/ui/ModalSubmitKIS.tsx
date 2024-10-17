@@ -12,7 +12,7 @@ function ModalSubmitKIS({
   setIsSuccess,
   setIsTrue,
   setIsFail,
-  setVisibleModal
+  setVisibleModal,
 }: any) {
   const [answer, setAnswer] = useState("");
 
@@ -47,7 +47,6 @@ function ModalSubmitKIS({
   }, [answer, videoId, milisecond]);
 
   const handleSubmit = async () => {
-
     try {
       // const res = await axios.post(
       //   "https://aic24.onrender.com/add-user-to-query",
@@ -73,16 +72,19 @@ function ModalSubmitKIS({
       );
 
       setIsSuccess(true);
-      console.log(res.data)
-      setIsTrue(true);
+      console.log(res.data.submission);
+      if (res.data.submission == "WRONG") {
+        setIsTrue(false);
+      }
+
       setVisible(false);
-      setVisibleModal(false)
+      setVisibleModal(false);
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);
       setIsFail(true);
       setVisible(false);
-      setVisibleModal(false)
+      setVisibleModal(false);
     }
   };
 
