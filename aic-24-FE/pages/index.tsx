@@ -30,6 +30,7 @@ import ModalSuccess from "ui/ModalSuccess";
 import GeminiComponent from "ui/GeminiComponent";
 import ModalSubmitQA from "ui/ModalSubmitQA";
 import ModalSubmitKIS from "ui/ModalSubmitKIS";
+import ModalFail from "ui/ModalFail";
 
 function extractVideoYoutubeId(url: string) {
   const urlObj = new URL(url);
@@ -88,12 +89,13 @@ const Home: NextPage = () => {
   const [numPeople, setNumPeople] = useState("");
   const [numberPeopleOption, setNumberPeoplehOption] = useState<string>("off");
   const [nameOption, setNameOption] = useState<String>("minh");
-  const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitQA, setIsSubmitQA] = useState(false);
   const [isSubmitKIS, setIsSubmitKIS] = useState(false);
   const [historyQuery, setHistoryQuery] = useState<any>([]);
   const [searchHeading, setSearchHeading] = useState("");
+  const [isTrue, setIsTrue] = useState(false);
+  const [isFail, setIsFail] = useState(false);
 
   function extractParts(str: string) {
     const regex = /[\/\\]([^\/\\]+)[\/\\](\d+\.webp)$/;
@@ -652,9 +654,6 @@ const Home: NextPage = () => {
         </Button>
       </Modal>
 
-      <ModalLoading isLoading={isLoading} setIsLoading={setIsLoading}/>
-      {/* <ModalSuccess isSuccess={true} setIsSuccess={setIsSuccess} /> */}
-
       <ModalSubmitQA
         visible={isSubmitQA}
         setVisible={setIsSubmitQA}
@@ -663,6 +662,9 @@ const Home: NextPage = () => {
           modalItem.frameId.split(".")[0],
           modalItem.fps ? modalItem.fps : "25"
         )}
+        setIsSuccess={setIsSuccess}
+        setIsTrue={setIsTrue}
+        setIsFail={setIsFail}
       />
       <ModalSubmitKIS
         visible={isSubmitKIS}
@@ -672,11 +674,17 @@ const Home: NextPage = () => {
           modalItem.frameId.split(".")[0],
           modalItem.fps ? modalItem.fps : "25"
         )}
-        setIsLoading={setIsLoading}
-        name = {nameOption}
+        name={nameOption}
+        setIsSuccess={setIsSuccess}
+        setIsTrue={setIsTrue}
+        setIsFail={setIsFail}
       />
-   
-     
+      <ModalSuccess
+        isSuccess={isSuccess}
+        setIsSuccess={setIsSuccess}
+        isTrue={isTrue}
+      />
+      <ModalFail isFail={isFail} setIsFail={setIsFail} />
     </>
   );
 };

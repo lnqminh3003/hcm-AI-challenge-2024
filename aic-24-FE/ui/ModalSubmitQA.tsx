@@ -1,9 +1,18 @@
 import { Modal } from "antd";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
-function ModalSubmitQA({ visible, setVisible, submit, videoId, milisecond }: any) {
+function ModalSubmitQA({
+  visible,
+  setVisible,
+  videoId,
+  milisecond,
+  setIsSuccess,
+  setIsTrue,
+  setIsFail,
+}: any) {
   const [answer, setAnswer] = useState("");
-  const [isConfirmSubmit, SetConfirmSubmit] = useState(false);
+
   const [body, setBody] = useState({
     answerSets: [{ answers: [{ text: "" }] }],
   });
@@ -11,31 +20,43 @@ function ModalSubmitQA({ visible, setVisible, submit, videoId, milisecond }: any
   useEffect(() => {
     setBody({
       answerSets: [
-        { answers: [{ text: answer + "-" + videoId + "-" + milisecond}] },
+        { answers: [{ text: answer + "-" + videoId + "-" + milisecond }] },
       ],
     });
   }, [answer, videoId, milisecond]);
+
+  const handleSubmit = async () => {
+    try {
+      const res = await axios.post(
+        "https://eventretrieval.one/api/v2/submit/4df14a14-4641-49a4-80be-8d61d5de58b6",
+        body,
+        {
+          params: {
+            session: "5bc243e3-c59e-4793-bbb1-5714f770935e",
+          },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setIsSuccess(true);
+      console.log(res.data);
+
+      console.log("Submitted data:", res.data);
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      setIsFail(true);
+    }
+  };
 
   return (
     <div>
       <Modal
         centered
         onOk={async () => {
-          SetConfirmSubmit(false);
-          await submit();
+          await handleSubmit();
           setAnswer("");
-        }}
-        okText="Confirm"
-        onCancel={() => SetConfirmSubmit(false)}
-        open={isConfirmSubmit}
-      >
-        Do You Want To Submit?
-      </Modal>
-
-      <Modal
-        centered
-        onOk={async () => {
-          SetConfirmSubmit(true);
         }}
         okText="Confirm"
         onCancel={() => setVisible(false)}

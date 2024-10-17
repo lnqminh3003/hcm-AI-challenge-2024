@@ -1,18 +1,19 @@
 import { Modal } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import ModalSuccess from "./ModalSuccess";
 
 function ModalSubmitKIS({
   visible,
   setVisible,
   videoId,
   milisecond,
-  setIsLoading,
   name,
+  setIsSuccess,
+  setIsTrue,
+  setIsFail
 }: any) {
   const [answer, setAnswer] = useState("");
-  const [response, setResponse] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const [body, setBody] = useState({
     answerSets: [
@@ -45,43 +46,41 @@ function ModalSubmitKIS({
   }, [answer, videoId, milisecond]);
 
   const handleSubmit = async () => {
-    setIsLoading(true);
 
     try {
-      const res = await axios.post(
-        "https://aic24.onrender.com/add-user-to-query",
-        {
-          "queryName": "query 2",
-          "user":  {
-              "id": name,
-              "videoId": videoId,
-              "frameId": milisecond.toString(),
-              "QA" : "A"
-            }
-        }
-        
-      );
-
       // const res = await axios.post(
-      //   "https://eventretrieval.one/api/v2/submit/4df14a14-4641-49a4-80be-8d61d5de58b6",
-      //   body,
+      //   "https://aic24.onrender.com/add-user-to-query",
       //   {
-      //     params: {
-      //       session: "9MH-KbTyrD76R1iD5st_VyQ1BJfWcJuP",
-      //     },
-      //     headers: {
-      //       "Content-Type": "application/json",
+      //     queryName: "query 2",
+      //     user: {
+      //       id: name,
+      //       videoId: videoId,
+      //       frameId: milisecond.toString(),
+      //       QA: "A",
       //     },
       //   }
       // );
 
-      setIsLoading(false);
+      const res = await axios.post(
+        "https://eventretrieval.one/api/v2/submit/4df14a14-4641-49a4-80be-8d61d5de58b6",
+        body,
+        {
+          params: {
+            session: "5bc243e3-c59e-4793-bbb1-5714f770935e",
+          },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       setIsSuccess(true);
-      setResponse(res.data);
+      console.log(res.data)
+      setIsTrue(true);
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);
-      setIsLoading(false);
+      setIsFail(true);
     }
   };
 
@@ -102,18 +101,6 @@ function ModalSubmitKIS({
           <pre>{JSON.stringify(body, null, 2)}</pre>
         </div>
       </Modal>
-
-      <div className="z-50">
-        <Modal
-          centered
-          onOk={() => setIsSuccess(false)}
-          okText="SUCCESS"
-          open={isSuccess}
-        >
-          <div className="font-bold text-xl mb-4">SUCCESS</div>
-          <div>{JSON.stringify(response, null, 2)}</div>
-        </Modal>
-      </div>
     </div>
   );
 }

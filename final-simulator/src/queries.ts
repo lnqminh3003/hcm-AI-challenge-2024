@@ -13,7 +13,7 @@ const queries: QueriesType = {
     "L30_V064",
     "00375",
     "QA",
-    "...",
+    "youtubelink",
   ],
   "2": [
     "Mở đầu video là cảnh một người đàn ông mặc áo xanh dương đang để tay trên eo, giữa một lớp học.",
@@ -102,8 +102,8 @@ const queries: QueriesType = {
     "Có một bức vẽ về cảnh phim nổi tiếng trong một bộ phim mà ông làm đạo diễn. Triễn lãm này có tên: 'Nghệ thuật của Cameron'",
     "L14_V004",
     "[20250, 20696]",
-    "",
-    "",
+    "QA",
+    "youtubelink",
   ],
   "12": [
     "Các nguyên liệu nấu ăn được đặt trong các dĩa màu trắng bày ở trên bàn, đậy lại bằng cái chén màu xanh ngọc bích.",
