@@ -77,10 +77,12 @@ function ModalSubmitKIS({
       setIsSuccess(true);
       console.log(res.data)
       setIsTrue(true);
+      setVisible(false);
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);
       setIsFail(true);
+      setVisible(false);
     }
   };
 

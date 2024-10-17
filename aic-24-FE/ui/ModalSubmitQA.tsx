@@ -41,12 +41,14 @@ function ModalSubmitQA({
       );
 
       setIsSuccess(true);
+      setVisible(false);
       console.log(res.data);
 
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);
       setIsFail(true);
+      setVisible(false);
     }
   };
 
