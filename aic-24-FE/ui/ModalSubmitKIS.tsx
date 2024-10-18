@@ -63,7 +63,7 @@ function ModalSubmitKIS({
       //     },
       //   }
       // );
-      
+
       const res = await axios.post(
         `https://eventretrieval.one/api/v2/submit/${evaId}?session=${sessionId}`,
         body,
@@ -73,6 +73,15 @@ function ModalSubmitKIS({
           },
         }
       );
+
+      const logText = `Status: ${res.data.status}, Submission: ${res.data.submission}, Video: ${videoId}, Frame: ${milisecond}`
+
+      const log = await axios.post(
+        `http://localhost:8000\print_log`,
+        {
+          text: logText || "This Is Log",
+        }
+      )
 
       setIsSuccess(true);
       console.log(res.data.submission);

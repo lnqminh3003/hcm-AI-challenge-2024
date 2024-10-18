@@ -41,6 +41,15 @@ function ModalSubmitQA({
         }
       );
 
+      const logText = `Status: ${res.data.status}, Submission: ${res.data.submission}, Video: ${videoId}, Frame: ${milisecond}`
+
+      const log = await axios.post(
+        `http://localhost:8000/print_log`,
+        {
+          text: logText || "This Is Log",
+        }
+      )
+
       setIsSuccess(true);
       setVisible(false);
       setVisibleModal(false);
