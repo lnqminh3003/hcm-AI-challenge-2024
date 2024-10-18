@@ -10,7 +10,12 @@ function ModalSuccess({ isSuccess, setIsSuccess, isTrue }: any) {
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full flex flex-col items-center">
             {isTrue ? (
               <>
-                <Image src={successImage} alt="Success" width={200} height={200} />
+                <Image
+                  src={successImage}
+                  alt="Success"
+                  width={200}
+                  height={200}
+                />
                 <p className="mb-6 mt-6 text-xl">TRUE</p>
               </>
             ) : (
