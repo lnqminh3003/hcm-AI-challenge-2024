@@ -77,7 +77,7 @@ function ModalSubmitKIS({
       const logText = `Status: ${res.data.status}, Submission: ${res.data.submission}, Video: ${videoId}, Frame: ${milisecond}`
 
       const log = await axios.post(
-        `http://localhost:8000\print_log`,
+        `http://localhost:8000/print_log`,
         {
           text: logText || "This Is Log",
         }
@@ -88,7 +88,7 @@ function ModalSubmitKIS({
       if (res.data.submission == "WRONG") {
         setIsTrue(false);
       }
-      else{
+      else {
         setIsTrue(true);
       }
 

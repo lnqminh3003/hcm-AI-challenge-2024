@@ -1,2 +1,0 @@
-2024-10-18 07:30:35 -> Status: true, Submission: WRONG, Video: L22_V016, Frame: 983960
-2024-10-18 07:35:55 -> Status: true, Submission: WRONG, Video: L14_V012, Frame: 689920

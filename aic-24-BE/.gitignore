@@ -74,3 +74,4 @@ raw/*
 *.json
 debug*
 \venv
+log.txt

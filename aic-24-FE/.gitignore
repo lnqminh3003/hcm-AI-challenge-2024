@@ -62,4 +62,4 @@ next-env.d.ts
 /public/L19/**/*
 /public/L20/**/*
 
-
+yarn.lock

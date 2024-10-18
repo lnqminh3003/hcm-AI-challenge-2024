@@ -41,7 +41,7 @@ function ModalSubmitQA({
         }
       );
 
-      const logText = `Status: ${res.data.status}, Submission: ${res.data.submission}, Video: ${videoId}, Frame: ${milisecond}`
+      const logText = `Status: ${res.data.status}, Submission: ${res.data.submission}, Video: ${videoId}, Frame: ${milisecond}, QA: ${answer}`;
 
       const log = await axios.post(
         `http://localhost:8000/print_log`,
@@ -57,10 +57,10 @@ function ModalSubmitQA({
       if (res.data.submission == "WRONG") {
         setIsTrue(false);
       }
-      else{
+      else {
         setIsTrue(true);
       }
-      
+
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);
