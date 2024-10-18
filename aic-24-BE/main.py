@@ -94,6 +94,37 @@ async def preload_model():
                     )
                     app.text_data[vid_id][start] = segment[
                         "text"
+                    ]    
+
+    c = Client(
+        host="127.0.0.1",
+        port=1492,
+        password="admin",
+        max_connections=100,
+    )
+    await c.channel(Channel.SEARCH)
+    app.client = c
+    print("Connected to Sonic Heading")
+    files = []
+    asr_folder = "./data_processing/raw/headings_ocr/"
+    app.text_data = {}
+
+    for file in os.listdir(asr_folder):
+        if file.endswith(".json"):
+            file_path = os.path.join(asr_folder, file)
+            vid_id = file.split(".")[0]
+            with open(
+                file_path, "r", encoding="utf-8"
+            ) as f:
+                data = json.load(f)["segments"]
+                app.text_data[vid_id] = {}
+
+                for segment in data:
+                    start = int(
+                        float(segment["start"]) * 25
+                    )
+                    app.text_data[vid_id][start] = segment[
+                        "text"
                     ]                  
 
 

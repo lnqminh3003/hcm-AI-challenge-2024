@@ -14,7 +14,7 @@ asr_folder = "./data_processing/raw/headings_ocr/"
 async def setup():
     c = Client(
         host="127.0.0.1",
-        port=1491,
+        port=1492,
         password="admin",
         max_connections=1000,
     )
