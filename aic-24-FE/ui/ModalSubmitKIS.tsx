@@ -51,53 +51,53 @@ function ModalSubmitKIS({
 
   const handleSubmit = async () => {
     try {
-      // const res = await axios.post(
-      //   "https://aic24.onrender.com/add-user-to-query",
-      //   {
-      //     queryName: "query 2",
-      //     user: {
-      //       id: name,
-      //       videoId: videoId,
-      //       frameId: milisecond.toString(),
-      //       QA: "A",
-      //     },
-      //   }
-      // );
-
       const res = await axios.post(
-        `https://eventretrieval.one/api/v2/submit/${evaId}?session=${sessionId}`,
-        body,
+        "https://aic24.onrender.com/add-user-to-query",
         {
-          headers: {
-            "Content-Type": "application/json",
+          queryName: "query 2",
+          user: {
+            id: name,
+            videoId: videoId,
+            frameId: milisecond.toString(),
+            QA: "A",
           },
         }
       );
 
-      const logText = `Status: ${res.data.status}, Submission: ${res.data.submission}, Video: ${videoId}, Frame: ${milisecond}`
+      // const res = await axios.post(
+      //   `https://eventretrieval.one/api/v2/submit/${evaId}?session=${sessionId}`,
+      //   body,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
 
-      const log = await axios.post(
-        `http://localhost:8000/print_log`,
-        {
-          text: logText || "This Is Log",
-        }
-      )
+      // const logText = `Status: ${res.data.status}, Submission: ${res.data.submission}, Video: ${videoId}, Frame: ${milisecond}`
 
-      setIsSuccess(true);
-      console.log(res.data.submission);
-      if (res.data.submission == "WRONG") {
-        setIsTrue(false);
-      }
-      else {
-        setIsTrue(true);
-      }
+      // const log = await axios.post(
+      //   `http://localhost:8000/print_log`,
+      //   {
+      //     text: logText || "This Is Log",
+      //   }
+      // )
+
+      // setIsSuccess(true);
+      // console.log(res.data.submission);
+      // if (res.data.submission == "WRONG") {
+      //   setIsTrue(false);
+      // }
+      // else {
+      //   setIsTrue(true);
+      // }
 
       setVisible(false);
       setVisibleModal(false);
       console.log("Submitted data:", res.data);
     } catch (error) {
       console.error("Error submitting data:", error);
-      setIsFail(true);
+      // setIsFail(true);
       setVisible(false);
       setVisibleModal(false);
     }
