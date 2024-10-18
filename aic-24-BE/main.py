@@ -159,6 +159,10 @@ class ASRQuery(BaseModel):
     text: str
     top: int = 40
 
+class HeadingQuery(BaseModel):
+    text: str
+    top: int = 40
+
 
 
 @app.post("/asr")
@@ -180,6 +184,38 @@ async def asrquery(asrquery: ASRQuery):
         # frame_end = int(float(frame_end) * 25)
         # frame_mid = ((frame_start + frame_end) >> 1)
         # frame_mid -= frame_mid % 25
+
+        frame_list = utils.asc_list_decompress(frame_list)
+
+        res.append(
+            {
+                "text": app.text_data[vid_id][frame_start],
+                "video_id": vid_id,
+                "start": frame_start,
+                "listFrameId" : frame_list,
+                "fps": fps,
+                "prefix": prefix,
+            },
+        )
+
+    return res
+
+@app.post("/heading")
+async def headingquery(headingquery: HeadingQuery):
+    results = await app.client.query(
+        collection="heading",
+        bucket="test_heading",
+        terms=headingquery.text,
+        limit=headingquery.top,
+    )
+
+    res = []
+    print(results)
+    for r in results:
+        result = utils.unicode_string_decompress(''.join([chr(x) for x in r]))
+        vid_id, frame_start, fps, prefix, frame_list  = result.split("\t")
+
+        frame_start = int(float(frame_start) * 25)
 
         frame_list = utils.asc_list_decompress(frame_list)
 

@@ -161,56 +161,62 @@ const Home: NextPage = () => {
                               setModalItem={setModalItem}
                             />
                           ) : (
-                            <div className="">
-                              <p>
-                                Video ID:
-                                {
-                                  extractParts(img.link ? img.link : "")
-                                    ?.videoId
-                                }
-                              </p>
-                              {img.highlight == "true" ? (
-                                <AntdImage
-                                  style={{
-                                    borderRadius: 0,
-                                    height: "160px",
-                                    width: "213px",
-                                    borderColor: "red",
-                                    borderWidth: 5,
-                                  }}
-                                  src={img.link}
-                                  alt="aic-img"
-                                  onClick={() => {
-                                    setModalItem(img);
-                                    setVisible(true);
-                                  }}
-                                  preview={false}
-                                />
+                            <>
+                              {searchOption == "heading" ? (
+                                <div>Hello</div>
                               ) : (
-                                <AntdImage
-                                  style={{
-                                    borderRadius: 0,
-                                    height: "160px",
-                                    width: "213px",
-                                  }}
-                                  src={img.link}
-                                  alt="aic-img"
-                                  onClick={() => {
-                                    setModalItem(img);
-                                    setVisible(true);
-                                  }}
-                                  preview={false}
-                                />
-                              )}
+                                <div className="">
+                                  <p>
+                                    Video ID:
+                                    {
+                                      extractParts(img.link ? img.link : "")
+                                        ?.videoId
+                                    }
+                                  </p>
+                                  {img.highlight == "true" ? (
+                                    <AntdImage
+                                      style={{
+                                        borderRadius: 0,
+                                        height: "160px",
+                                        width: "213px",
+                                        borderColor: "red",
+                                        borderWidth: 5,
+                                      }}
+                                      src={img.link}
+                                      alt="aic-img"
+                                      onClick={() => {
+                                        setModalItem(img);
+                                        setVisible(true);
+                                      }}
+                                      preview={false}
+                                    />
+                                  ) : (
+                                    <AntdImage
+                                      style={{
+                                        borderRadius: 0,
+                                        height: "160px",
+                                        width: "213px",
+                                      }}
+                                      src={img.link}
+                                      alt="aic-img"
+                                      onClick={() => {
+                                        setModalItem(img);
+                                        setVisible(true);
+                                      }}
+                                      preview={false}
+                                    />
+                                  )}
 
-                              <p className="">
-                                Frame ID:
-                                {
-                                  extractParts(img.link ? img.link : "")
-                                    ?.frameId
-                                }
-                              </p>
-                            </div>
+                                  <p className="">
+                                    Frame ID:
+                                    {
+                                      extractParts(img.link ? img.link : "")
+                                        ?.frameId
+                                    }
+                                  </p>
+                                </div>
+                              )}
+                            </>
                           )}
                         </Col>
                       ))}
@@ -294,6 +300,30 @@ const Home: NextPage = () => {
     const { asrText, enString, limit, model } = form.getFieldsValue();
     if (searchOption === "asr") {
       API_SERVICES.ASR.asr(asrText, limit).then((responseData) => {
+        const newSource: ImgType[] = [];
+
+        responseData.forEach((value) => {
+          value.listFrameId.forEach((frameId) => {
+            if (frameId != "") {
+              newSource.push({
+                video: value.video_id,
+                frameId: frameId,
+                link: `/data/video_frames/${value.video_id}/${frameId}.webp`,
+                text: value.text,
+                fps: value.fps,
+                youtubeUrl: `https://www.youtube.com/watch?v=${
+                  value.prefix
+                }k&t=${(parseInt(frameId) / parseInt(value.fps)).toString()}s`,
+              });
+            }
+          });
+        });
+
+        console.log(newSource);
+        setImgSource(newSource);
+      });
+    } else if (searchOption === "heading") {
+      API_SERVICES.HEADING.heading(asrText, limit).then((responseData) => {
         const newSource: ImgType[] = [];
 
         responseData.forEach((value) => {

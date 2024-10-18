@@ -51,8 +51,8 @@ async def setup():
 
                 try:
                     await c.push(
-                        collection="asr",
-                        bucket="test",
+                        collection="heading",
+                        bucket="test_heading",
                         obj=obj,
                         text=segment["text"],
                     )
