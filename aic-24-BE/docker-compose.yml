@@ -16,17 +16,3 @@ services:
       interval: 1s
       timeout: 5s
       retries: 120
-
-    sonic_headings:
-      image: valeriansaliou/sonic:v1.2.0
-      container_name: sonic_headings
-      volumes:
-        - ./sonic_conf_heading.cfg:/etc/sonic.cfg
-      ports:
-        - "1492:1491"
-      healthcheck:
-        test: ["CMD", "sleep", "2"]
-        interval: 1s
-        timeout: 5s
-        retries: 120
-        

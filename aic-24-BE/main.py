@@ -74,7 +74,6 @@ async def preload_model():
     await c.channel(Channel.SEARCH)
     app.client = c
     print("Connected to Sonic")
-    files = []
     asr_folder = "./data_processing/raw/transcript/"
     app.text_data = {}
 
@@ -96,34 +95,24 @@ async def preload_model():
                         "text"
                     ]    
 
-    c = Client(
-        host="127.0.0.1",
-        port=1492,
-        password="admin",
-        max_connections=100,
-    )
-    await c.channel(Channel.SEARCH)
-    app.client = c
-    print("Connected to Sonic Heading")
-    files = []
-    asr_folder = "./data_processing/raw/headings_ocr/"
-    app.text_data = {}
+    heading_folder = "./data_processing/raw/headings_ocr/"
+    app.heading_data = {}
 
-    for file in os.listdir(asr_folder):
+    for file in os.listdir(heading_folder):
         if file.endswith(".json"):
-            file_path = os.path.join(asr_folder, file)
+            file_path = os.path.join(heading_folder, file)
             vid_id = file.split(".")[0]
             with open(
                 file_path, "r", encoding="utf-8"
             ) as f:
                 data = json.load(f)["segments"]
-                app.text_data[vid_id] = {}
+                app.heading_data[vid_id] = {}
 
                 for segment in data:
                     start = int(
                         float(segment["start"]) * 25
                     )
-                    app.text_data[vid_id][start] = segment[
+                    app.heading_data[vid_id][start] = segment[
                         "text"
                     ]                  
 
@@ -246,13 +235,13 @@ async def headingquery(headingquery: HeadingQuery):
         result = utils.unicode_string_decompress(''.join([chr(x) for x in r]))
         vid_id, frame_start, fps, prefix, frame_list  = result.split("\t")
 
-        frame_start = int(float(frame_start) * 25)
+        frame_start = int(float(frame_start) * float(fps))
 
         frame_list = utils.asc_list_decompress(frame_list)
 
         res.append(
             {
-                "text": app.text_data[vid_id][frame_start],
+                "text": app.heading_data[vid_id][frame_start],
                 "video_id": vid_id,
                 "start": frame_start,
                 "listFrameId" : frame_list,

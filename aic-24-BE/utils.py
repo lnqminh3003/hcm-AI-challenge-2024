@@ -4,7 +4,6 @@ import numpy as np
 import json
 import os
 from fuzzywuzzy import process
-from unidecode import unidecode
 
 import datetime
 import pytz
