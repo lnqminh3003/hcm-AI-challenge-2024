@@ -95,12 +95,7 @@ const Video = ({ images, videoId }: Props) => {
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full flex flex-col items-center">
             {isTrue ? (
               <>
-                <Image
-                  src={successImage}
-                  alt="Success"
-                  width={200}
-                  height={200}
-                />
+                <Image src={successImage} alt="Success" width={200} height={200} />
                 <p className="mb-6 mt-6 text-xl">TRUE</p>
               </>
             ) : (
@@ -108,7 +103,6 @@ const Video = ({ images, videoId }: Props) => {
                 <p className="mb-6 mt-6 text-xl">SAI KET QUA ROI</p>
               </>
             )}
-
 
             <button
               className="bg-red-500 text-white font-bold py-2 px-4 rounded"
@@ -218,7 +212,7 @@ const Video = ({ images, videoId }: Props) => {
             window.open(
               `https://www.youtube.com/watch?v=${prefix}&t=${Math.floor(
                 parseInt(modalItem.frameId) /
-                  parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
+                parseInt(Array.isArray(fps) ? fps[0] : fps ? fps : "1")
               ).toString()}s`
             );
           }}
