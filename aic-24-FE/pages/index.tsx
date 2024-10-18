@@ -774,6 +774,7 @@ const Home: NextPage = () => {
         setIsSuccess={setIsSuccess}
         setIsTrue={setIsTrue}
         setIsFail={setIsFail}
+        framdId={modalItem.frameId}
       />
     </div>
   );

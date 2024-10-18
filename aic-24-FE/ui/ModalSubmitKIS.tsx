@@ -9,6 +9,7 @@ function ModalSubmitKIS({
   videoId,
   milisecond,
   name,
+  framdId,
   setIsSuccess,
   setIsTrue,
   setIsFail,
@@ -58,7 +59,7 @@ function ModalSubmitKIS({
           user: {
             id: name,
             videoId: videoId,
-            frameId: milisecond.toString(),
+            frameId: framdId.toString(),
             QA: "A",
           },
         }
