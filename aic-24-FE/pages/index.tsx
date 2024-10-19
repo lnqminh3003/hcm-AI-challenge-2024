@@ -658,7 +658,31 @@ const Home: NextPage = () => {
         </div>
 
         <div className="text-2xl mb-2 font-bold">Bag</div>
-        <BagVideos formInstance={form} />
+        <div>
+          <Button
+            type="primary"
+            style={{ marginBottom: 16 }}
+            onClick={() => {
+              for (var i = 0; i < imgSource.length; i++) {
+                const badVideos = form.getFieldValue("badVideos");
+                if (badVideos) {
+                  if (!badVideos.includes(imgSource[i].video)) {
+                    form.setFieldValue("badVideos", [
+                      ...badVideos,
+                      imgSource[i].video,
+                    ]);
+                  }
+                } else {
+                  form.setFieldValue("badVideos", [imgSource[i].video]);
+                }
+              }
+            }}
+          >
+            Add full
+          </Button>
+        </div>
+
+      {/* <BagVideos formInstance={form} /> */}
       </Form>
 
       <div className="font-bold text-2xl text-center w-full"> Images </div>
