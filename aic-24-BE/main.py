@@ -218,7 +218,7 @@ async def asrquery(asrquery: ASRQuery):
             },
         )
 
-    return res
+    return res 
 
 @app.post("/heading")
 async def headingquery(headingquery: HeadingQuery):

@@ -14,7 +14,11 @@ import {
   Affix,
 } from "antd";
 import Image from "next/image";
-import { SearchOutlined, DeleteFilled } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  DeleteFilled,
+  FolderAddFilled,
+} from "@ant-design/icons";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
@@ -36,6 +40,7 @@ import ModalFail from "ui/ModalFail";
 import successImage from "../public/submit.png";
 import failImage from "../public/fail.png";
 import HeadingItem from "ui/heading-item";
+import BagVideos from "ui/bag-videos";
 
 function extractVideoYoutubeId(url: string) {
   const urlObj = new URL(url);
@@ -120,6 +125,11 @@ const Home: NextPage = () => {
     return Math.floor((parseInt(frameId) / parseInt(fps)) * 1000);
   }
 
+  function checkVideoInBag(videoId: string) {
+    const badVideos = form.getFieldValue("badVideos");
+    return badVideos.includes(videoId);
+  }
+
   const imgContent = useMemo(() => {
     const newImgSrc = groupByVideo(imgSource);
     return (
@@ -152,7 +162,27 @@ const Home: NextPage = () => {
                       }}
                       rev={undefined}
                     />
-                    <Row gutter={[8, 8]}>
+
+                    <FolderAddFilled
+                      style={{ fontSize: 20, margin: 8, color: "blue" }}
+                      onClick={() => {
+                        const badVideos = form.getFieldValue("badVideos");
+                        if (badVideos) {
+                          if (!badVideos.includes(e)) {
+                            form.setFieldValue("badVideos", [...badVideos, e]);
+                          }
+                        } else {
+                          form.setFieldValue("badVideos", [e]);
+                        }
+                      }}
+                      rev={undefined}
+                    />
+                    <Row 
+                      gutter={[8, 8]}
+                      className={`${
+                        checkVideoInBag(e) && "border-4 border-blue-600 "
+                      }`}
+                    >
                       {newImgSrc[e].map((img) => (
                         <Col key={img.frameId}>
                           {asr ? (
@@ -391,7 +421,6 @@ const Home: NextPage = () => {
       return !ignoredVideos.includes(frame.video);
     });
 
-    form.setFieldValue("ignoredVideos", []);
     setImgSource(newFrames);
   };
 
@@ -518,7 +547,7 @@ const Home: NextPage = () => {
             </Item>
           </Col>
 
-          <Col span={11}>
+          {/* <Col span={11}>
             <Item name="geminiInput">
               <TextArea
                 onChange={() => {}}
@@ -534,8 +563,8 @@ const Home: NextPage = () => {
             onClick={handleGemini}
           >
             Generate
-          </button>
-          <Col span={11}>
+          </button> */}
+          {/* <Col span={11}>
             <Item name="geminiOutput">
               <TextArea
                 onChange={() => {}}
@@ -545,7 +574,7 @@ const Home: NextPage = () => {
                 placeholder="Gemini Output"
               />
             </Item>
-          </Col>
+          </Col> */}
 
           <Col span={12} className="-mt-10 flex flex-col">
             <div className="mb-4">
@@ -616,7 +645,9 @@ const Home: NextPage = () => {
           )}
           <div style={{ height: 20 }}></div>
         </Row>
-        <Affix offsetTop={10}>
+
+        <IgnoredVideos formInstance={form} />
+        <div>
           <Button
             type="primary"
             style={{ marginBottom: 16 }}
@@ -624,8 +655,10 @@ const Home: NextPage = () => {
           >
             Filter
           </Button>
-        </Affix>
-        <IgnoredVideos formInstance={form} />
+        </div>
+
+        <div className="text-2xl mb-2 font-bold">Bag</div>
+        <BagVideos formInstance={form} />
       </Form>
 
       <div className="font-bold text-2xl text-center w-full"> Images </div>
@@ -640,7 +673,7 @@ const Home: NextPage = () => {
         }}
         okText="Submit KIS"
         onCancel={() => setVisible(false)}
-        width="600px"
+        width="700px"
         open={visible}
       >
         <AntdImage
@@ -653,6 +686,24 @@ const Home: NextPage = () => {
         </p>
         <Row gutter={[8, 8]} className="mt-4">
           <Col>
+            <Button
+              className="mr-4"
+              onClick={() => {
+                const badVideos = form.getFieldValue("badVideos");
+                if (badVideos) {
+                  if (!badVideos.includes(modalItem.video)) {
+                    form.setFieldValue("badVideos", [
+                      ...badVideos,
+                      modalItem.video,
+                    ]);
+                  }
+                } else {
+                  form.setFieldValue("badVideos", [modalItem.video]);
+                }
+              }}
+            >
+              Add to Bag
+            </Button>
             <Button
               onClick={() => {
                 const ignoredVideos = form.getFieldValue("ignoredVideos");

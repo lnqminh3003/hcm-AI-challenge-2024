@@ -6,16 +6,16 @@ type Props = {
   formInstance: FormInstance;
 };
 
-const IgnoredVideos = (formProps: Props) => {
+const BagVideos = (formProps: Props) => {
   const { formInstance } = formProps;
   return (
-    <div className="">
-      <Item name="ignoredVideos" initialValue={[]}>
+    <Affix offsetTop={20}>
+      <Item name="badVideos" initialValue={[]}>
         <Select
           mode="multiple"
-          placeholder="Ignored Videos"
-          value={formInstance.getFieldValue("ignoredVideos")}
-          style={{
+          placeholder="Bag Videos"
+          value={formInstance.getFieldValue("badVideos")}
+          style={{  
             width: "100%",
             marginLeft: 2,
             borderWidth: 1,
@@ -23,8 +23,8 @@ const IgnoredVideos = (formProps: Props) => {
           }}
         />
       </Item>
-    </div>
+    </Affix>
   );
 };
 
-export default IgnoredVideos;
+export default BagVideos;
