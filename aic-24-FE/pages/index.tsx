@@ -35,6 +35,7 @@ import ModalFail from "ui/ModalFail";
 
 import successImage from "../public/submit.png";
 import failImage from "../public/fail.png";
+import HeadingItem from "ui/heading-item";
 
 function extractVideoYoutubeId(url: string) {
   const urlObj = new URL(url);
@@ -163,7 +164,11 @@ const Home: NextPage = () => {
                           ) : (
                             <>
                               {searchOption == "heading" ? (
-                                <div>Hello</div>
+                                <HeadingItem
+                                  imgData={img}
+                                  setVisible={setVisible}
+                                  setModalItem={setModalItem}
+                                />
                               ) : (
                                 <div className="">
                                   <p>
@@ -323,29 +328,33 @@ const Home: NextPage = () => {
         setImgSource(newSource);
       });
     } else if (searchOption === "heading") {
-      API_SERVICES.HEADING.heading(asrText, limit).then((responseData) => {
-        const newSource: ImgType[] = [];
+      API_SERVICES.HEADING.heading(searchHeading, limit).then(
+        (responseData) => {
+          const newSource: ImgType[] = [];
 
-        responseData.forEach((value) => {
-          value.listFrameId.forEach((frameId) => {
-            if (frameId != "") {
-              newSource.push({
-                video: value.video_id,
-                frameId: frameId,
-                link: `/data/video_frames/${value.video_id}/${frameId}.webp`,
-                text: value.text,
-                fps: value.fps,
-                youtubeUrl: `https://www.youtube.com/watch?v=${
-                  value.prefix
-                }k&t=${(parseInt(frameId) / parseInt(value.fps)).toString()}s`,
-              });
-            }
+          responseData.forEach((value) => {
+            value.listFrameId.forEach((frameId) => {
+              if (frameId != "") {
+                newSource.push({
+                  video: value.video_id,
+                  frameId: frameId,
+                  link: `/data/video_frames/${value.video_id}/${frameId}.webp`,
+                  text: value.text,
+                  fps: value.fps,
+                  youtubeUrl: `https://www.youtube.com/watch?v=${
+                    value.prefix
+                  }k&t=${(
+                    parseInt(frameId) / parseInt(value.fps)
+                  ).toString()}s`,
+                });
+              }
+            });
           });
-        });
 
-        console.log(newSource);
-        setImgSource(newSource);
-      });
+          console.log(newSource);
+          setImgSource(newSource);
+        }
+      );
     } else {
       API_SERVICES.QUERY.query(
         enString,
@@ -445,6 +454,13 @@ const Home: NextPage = () => {
     }
   }
 
+  const handleKeyDown = async (e: any) => {
+    if (e.key === "Enter" && e.shiftKey) {
+      e.preventDefault();
+      await handleQuery();
+    }
+  };
+
   return (
     <div className="">
       <Head>
@@ -492,6 +508,7 @@ const Home: NextPage = () => {
                 onChange={() => {
                   handleLiveSearchQuery(true);
                 }}
+                onKeyDown={handleKeyDown}
                 showCount
                 maxLength={1000}
                 style={{ height: 100, marginBottom: 24, borderWidth: 3 }}

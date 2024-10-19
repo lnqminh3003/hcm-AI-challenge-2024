@@ -40,14 +40,15 @@ async def setup():
                     str(segment["start"]), 
                     str(segment["fps"]), 
                     str(segment["prefix"]),
-                    frame_list_str
+                    frame_list_str,
+                    # str(segment["other"]),
                 ]
                 delim = "\t"
                 assert all([delim not in s for s in objData])
                 obj = delim.join(objData)
 
                 obj = utils.unicode_string_compress(obj)
-                assert len(obj) <= 128, f"obj {len(obj)}: {obj}, {objData}"
+                assert len(obj) <= 160, f"obj {len(obj)}: {obj}, {objData}"
 
                 try:
                     await c.push(
