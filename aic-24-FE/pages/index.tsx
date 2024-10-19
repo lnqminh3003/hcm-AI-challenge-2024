@@ -127,6 +127,7 @@ const Home: NextPage = () => {
 
   function checkVideoInBag(videoId: string) {
     const badVideos = form.getFieldValue("badVideos");
+
     return badVideos.includes(videoId);
   }
 
@@ -682,7 +683,7 @@ const Home: NextPage = () => {
           </Button>
         </div>
 
-      {/* <BagVideos formInstance={form} /> */}
+        <BagVideos formInstance={form} />
       </Form>
 
       <div className="font-bold text-2xl text-center w-full"> Images </div>

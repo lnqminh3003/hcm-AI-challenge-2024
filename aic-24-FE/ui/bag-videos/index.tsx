@@ -11,7 +11,7 @@ const BagVideos = (formProps: Props) => {
   return (
     <Affix offsetTop={20}>
       <Item name="badVideos" initialValue={[]}>
-        <Select
+        {/* <Select
           mode="multiple"
           placeholder="Bag Videos"
           value={formInstance.getFieldValue("badVideos")}
@@ -21,7 +21,7 @@ const BagVideos = (formProps: Props) => {
             borderWidth: 1,
             borderColor: "black",
           }}
-        />
+        /> */}
       </Item>
     </Affix>
   );
