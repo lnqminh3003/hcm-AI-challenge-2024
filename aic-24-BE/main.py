@@ -108,11 +108,15 @@ async def preload_model():
                 data = json.load(f)["segments"]
                 app.heading_data[vid_id] = {}
 
+                
+
                 for segment in data:
-                    start = int(
-                        float(segment["start"]) * 25
-                    )
-                    app.heading_data[vid_id][start] = segment[
+                    frame_list_str = utils.asc_list_compress(
+                    list(map(int, segment["frame_list"]))
+                )
+                    frame_list = utils.asc_list_decompress(frame_list_str)
+
+                    app.heading_data[vid_id][frame_list[0]] = segment[
                         "text"
                     ]                  
 
@@ -241,7 +245,7 @@ async def headingquery(headingquery: HeadingQuery):
 
         res.append(
             {
-                "text": app.heading_data[vid_id][frame_start],
+                "text": app.heading_data[vid_id][frame_list[0]],
                 "video_id": vid_id,
                 "start": frame_start,
                 "listFrameId" : frame_list,
