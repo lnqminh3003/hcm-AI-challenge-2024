@@ -177,7 +177,7 @@ const Home: NextPage = () => {
                       }}
                       rev={undefined}
                     />
-                    <Row 
+                    <Row
                       gutter={[8, 8]}
                       className={`${
                         checkVideoInBag(e) && "border-4 border-blue-600 "

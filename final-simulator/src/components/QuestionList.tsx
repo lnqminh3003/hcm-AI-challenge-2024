@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function QuestionList() {
-  const numbers = Array.from({ length: 30 }, (_, i) => i + 1);
+  const numbers = Array.from({ length: 100 }, (_, i) => i + 1);
 
   return (
     <div className="flex flex-wrap items-center mt-20 mx-20">
