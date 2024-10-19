@@ -499,6 +499,7 @@ const Home: NextPage = () => {
                 maxLength={800}
                 style={{ height: 100, marginBottom: 24, borderWidth: 3 }}
                 placeholder="Vi Text"
+                onKeyDown={handleKeyDown}
               />
             </Item>
           </Col>
